@@ -1,65 +1,85 @@
 // ==========================================
-// DBML OFICIAL Y ESTABLE: monedITa (Definitivo)
+// 1. GESTIÓN DE CICLOS Y CONVOCATORIAS
 // ==========================================
-
-// 1. AULAS Y CARRERAS (Para la competencia entre cursos y carreras)
-Table aulas {
+Table ciclos {
   id int [pk, increment]
-  nombre_carrera varchar // Ej: "Ingeniería de Sistemas"
-  periodo_academico varchar // Ej: "5to Semestre"
-  sobrenombre varchar // Ej: "Los Magios"
+  nombre varchar // Ej: "Semestre 1/2026"
+  estado varchar // "ACTIVO", "CERRADO"
+  fecha_inicio timestamp
+  fecha_fin timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ==========================================
+// 2. GESTIÓN DE TEAMS (EQUIPOS / AULAS)
+// ==========================================
+Table teams {
+  id int [pk, increment]
+  nombre varchar // Ej: "Los Únicos", "Sembradores de Paz"
+  ciclo_id int [ref: > ciclos.id]
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ==========================================
+// 3. USUARIOS (Adaptado a Laravel + Spatie)
+// ==========================================
+Table users {
+  id int [pk, increment]
+  registro_universitario varchar [unique, not null] // El que usan para loguearse
+  name varchar
+  email varchar [null, unique]
+  email_verified_at timestamp [null]
+  password varchar
+  team_id int [ref: > teams.id, null] // Null si es admin general
+  remember_token varchar [null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ==========================================
+// 4. BILLETERA VIRTUAL (WALLET DE MONEDITAS)
+// ==========================================
+Table wallets {
+  id int [pk, increment]
+  user_id int [ref: - users.id, unique]
+  saldo_actual decimal(10,2) [default: 0.00]
+  updated_at timestamp
+}
+
+// ==========================================
+// 5. CAUSA DINOSAURIO (FONDO COMÚN)
+// ==========================================
+Table causa_comun {
+  id int [pk, increment]
+  ciclo_id int [ref: > ciclos.id]
+  total_acumulado decimal(10,2) [default: 0.00]
+  descripcion varchar
+  updated_at timestamp
+}
+
+// ==========================================
+// 6. AUDITORÍA Y TRAZABILIDAD (LIBRO MAYOR)
+// ==========================================
+Table transacciones {
+  id int [pk, increment]
+  ciclo_id int [ref: > ciclos.id]
+  emisor_id int [ref: > users.id, null] // Null si viene del sistema
+  receptor_id int [ref: > users.id, null] // Null si va a la causa dinosaurio
+  monto decimal(10,2)
+  tipo_operacion varchar // "RECICLAJE", "REPARTO_GRUPAL", "DUELO", "CAUSA_DINOSAURIO", "MINIJUEGO"
+  observacion varchar
   created_at timestamp
 }
 
-// 2. USUARIOS Y BILLETERA
-Table usuarios {
+// ==========================================
+// 7. MINIJUEGOS INDIVIDUALES (RANKINGS)
+// ==========================================
+Table minijuegos_puntajes {
   id int [pk, increment]
-  aula_id int [ref: > aulas.id]
-  nombre varchar
-  correo varchar
-  rol varchar // 'estudiante', 'admin_reciclaje'
-  saldo_creditos int [default: 0] // Billetera centralizada de créditos monedITa
-  created_at timestamp
-}
-
-// 3. CAMPAÑAS SOLIDARIAS (El impacto real de las tapitas)
-Table causas_solidarias {
-  id int [pk, increment]
-  titulo varchar // Ej: "Campaña de Ayuda Social - Hospital del Niño"
-  meta_tapitas int
-  tapitas_actuales int [default: 0]
-  estado varchar // 'activo', 'completado'
-  created_at timestamp
-}
-
-// Registro de entregas físicas vs créditos virtuales (Genera los reportes para la dirección)
-Table donaciones_tapitas {
-  id int [pk, increment]
-  usuario_id int [ref: > usuarios.id] // Estudiante que entrega
-  causa_solidaria_id int [ref: > causas_solidarias.id]
-  cantidad_tapitas int
-  creditos_ganados int
-  registrado_por int [ref: > usuarios.id] // Admin que validó
-  created_at timestamp
-}
-
-// 4. GAMIFICACIÓN Y DUELOS MÓVILES (Progreso paralelo, seguro para la banca)
-Table duelos_minijuego {
-  id int [pk, increment]
-  retador_id int [ref: > usuarios.id] // Quien inicia el reto móvil
-  retado_id int [ref: > usuarios.id] // Quien acepta el reto en su dispositivo
-  puntaje_retador int [default: 0] // Puntaje final obtenido por el retador
-  puntaje_retado int [default: 0] // Puntaje final obtenido por el retado
-  ganador_id int [ref: > usuarios.id, null] // Definido por el sistema al comparar puntajes
-  estado varchar // 'pendiente', 'en_curso', 'completado'
-  created_at timestamp
-}
-
-// 5. COMUNIDAD (El Patio Digital)
-Table publicaciones_sociales {
-  id int [pk, increment]
-  usuario_id int [ref: > usuarios.id]
-  mensaje text // Ej: "¡El curso de 5to semestre acaba de romper récord en el duelo y en donaciones!"
-  cantidad_likes int [default: 0]
+  user_id int [ref: > users.id]
+  juego_nombre varchar
+  puntaje int
   created_at timestamp
 }

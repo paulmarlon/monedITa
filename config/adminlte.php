@@ -439,8 +439,21 @@ return [
     'rtl' => [
         'enabled' => null,
         'locales' => [
-            'ar', 'arc', 'ckb', 'dv', 'fa', 'ha', 'he', 'khw', 'ks', 'ps',
-            'sd', 'ug', 'ur', 'uz-AF', 'yi',
+            'ar',
+            'arc',
+            'ckb',
+            'dv',
+            'fa',
+            'ha',
+            'he',
+            'khw',
+            'ks',
+            'ps',
+            'sd',
+            'ug',
+            'ur',
+            'uz-AF',
+            'yi',
         ],
     ],
 
@@ -761,6 +774,14 @@ return [
 
     'menu' => [
         // Navbar items:
+
+        [
+            'text' => 'Periodo',
+            'route' => 'ciclos.index',
+            'icon' => 'bi bi-calendar-event me-1',
+            'classes' => 'btn-efecto-elevar text-info',
+        ],
+
         [
             'type' => 'navbar-search',
             'text' => 'search',
@@ -894,100 +915,121 @@ return [
     */
 
     'plugins' => [
+        /*
+         * Datatables: Núcleo principal para transformar tablas HTML estáticas
+         * en interfaces interactivas con paginación, búsqueda en tiempo real y ordenamiento.
+         */
         'Datatables' => [
             'active' => false,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/2.1.8/js/dataTables.min.js',
+                    'location' => 'https://code.jquery.com/jquery-3.7.1.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js',
+                    'location' => 'https://cdn.datatables.net/2.1.8/js/dataTables.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.min.js',
                 ],
                 [
                     'type' => 'css',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.min.css',
+                    'location' => 'https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.min.css',
                 ],
             ],
         ],
-        // The Datatables 'Buttons' extension, required by the 'with-buttons'
-        // attribute of the datatable component. JSZip powers the excel export
-        // and pdfmake the pdf one, drop them when you don't need those.
 
+        /*
+         * DatatablesButtons: Extensión para añadir botones de exportación
+         * (Excel con JSZip, PDF con pdfmake, Imprimir y Copiar) directamente en la tabla.
+         */
         'DatatablesButtons' => [
             'active' => false,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/buttons/4.0.2/js/dataTables.buttons.min.js',
+                    'location' => 'https://cdn.datatables.net/buttons/3.1.2/js/dataTables.buttons.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/buttons/4.0.2/js/buttons.bootstrap5.min.js',
+                    'location' => 'https://cdn.datatables.net/buttons/3.1.2/js/buttons.bootstrap5.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/buttons/4.0.2/js/buttons.html5.min.js',
+                    'location' => 'https://cdn.datatables.net/buttons/3.1.2/js/buttons.html5.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/buttons/4.0.2/js/buttons.print.min.js',
+                    'location' => 'https://cdn.datatables.net/buttons/3.1.2/js/buttons.print.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
+                    'location' => 'https://cdn.datatables.net/buttons/3.1.2/js/buttons.colVis.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.3.3/pdfmake.min.js',
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js',
                 ],
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.3.3/vfs_fonts.js',
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js',
                 ],
                 [
                     'type' => 'css',
                     'asset' => false,
-                    'location' => '//cdn.datatables.net/buttons/4.0.2/css/buttons.bootstrap5.min.css',
+                    'location' => 'https://cdn.datatables.net/buttons/3.1.2/css/buttons.bootstrap5.min.css',
                 ],
             ],
         ],
+
+        /*
+         * Select2: Transforma menús desplegables nativos (<select>) en selectores
+         * modernos con barra de búsqueda integrada y soporte para selección múltiple.
+         */
         'Select2' => [
             'active' => false,
             'files' => [
                 [
                     'type' => 'js',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js',
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js',
                 ],
                 [
                     'type' => 'css',
                     'asset' => false,
-                    'location' => '//cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css',
+                    'location' => 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css',
                 ],
-
-                // The AdminLTE v4 compatibility theme for Select2. Replace it
-                // by the 'adminlte-select2.rtl.min.css' file on RTL mode.
-
                 [
                     'type' => 'css',
                     'asset' => false,
-                    'location' => '//cdn.jsdelivr.net/npm/admin-lte@{version}/dist/css/adminlte-select2.min.css',
-                    'rtl' => '//cdn.jsdelivr.net/npm/admin-lte@{version}/dist/css/adminlte-select2.rtl.min.css',
+                    'location' => 'https://cdn.jsdelivr.net/npm/admin-lte@{version}/dist/css/adminlte-select2.min.css',
+                    'rtl' => 'https://cdn.jsdelivr.net/npm/admin-lte@{version}/dist/css/adminlte-select2.rtl.min.css',
                 ],
             ],
         ],
+
+        /*
+         * TomSelect: Alternativa ligera y moderna a Select2 para crear campos
+         * de selección avanzados con etiquetas y opciones personalizables.
+         */
         'TomSelect' => [
             'active' => false,
             'files' => [
@@ -1003,6 +1045,11 @@ return [
                 ],
             ],
         ],
+
+        /*
+         * Tabulator: Herramienta para construir tablas interactivas tipo hoja
+         * de cálculo con capacidad de editar celdas directamente en línea.
+         */
         'Tabulator' => [
             'active' => false,
             'files' => [
@@ -1018,6 +1065,11 @@ return [
                 ],
             ],
         ],
+
+        /*
+         * Flatpickr: Selector de fechas y horas limpio, rápido y adaptado
+         * para dispositivos táctiles.
+         */
         'Flatpickr' => [
             'active' => false,
             'files' => [
@@ -1033,6 +1085,11 @@ return [
                 ],
             ],
         ],
+
+        /*
+         * Quill: Editor de texto enriquecido (WYSIWYG) modular que permite
+         * redactar contenido con formato avanzado (negritas, cursivas, enlaces, etc.).
+         */
         'Quill' => [
             'active' => false,
             'files' => [
@@ -1048,6 +1105,11 @@ return [
                 ],
             ],
         ],
+
+        /*
+         * NoUiSlider: Control deslizante de rango táctil y fluido para la
+         * selección de valores numéricos o intervalos mediante barras deslizantes.
+         */
         'NoUiSlider' => [
             'active' => false,
             'files' => [
@@ -1063,6 +1125,11 @@ return [
                 ],
             ],
         ],
+
+        /*
+         * Chartjs: Librería ligera para generar gráficos estadísticos dinámicos
+         * (barras, líneas, pastel) ideales para paneles de control (dashboards).
+         */
         'Chartjs' => [
             'active' => false,
             'files' => [
@@ -1073,8 +1140,13 @@ return [
                 ],
             ],
         ],
+
+        /*
+         * Sweetalert2: Reemplaza las alertas nativas del navegador por ventanas
+         * modales elegantes, responsivas y altamente personalizables.
+         */
         'Sweetalert2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -1083,6 +1155,11 @@ return [
                 ],
             ],
         ],
+
+        /*
+         * Pace: Genera y muestra automáticamente una barra de progreso animada
+         * en la parte superior del navegador mientras carga la página o solicitudes AJAX.
+         */
         'Pace' => [
             'active' => false,
             'files' => [

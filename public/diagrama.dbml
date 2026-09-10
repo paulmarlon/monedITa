@@ -1,41 +1,59 @@
+Table configuraciones {
+  id integer [primary key, increment]
+  nombre varchar [not null]
+  descripcion text
+  direccion varchar
+  telefono varchar
+  correo varchar
+  web varchar
+  logo varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
 // ==========================================
 // 1. GESTIÓN DE CICLOS Y CONVOCATORIAS
 // ==========================================
 Table ciclos {
-  id int [pk, increment]
-  nombre varchar // Ej: "Semestre 1/2026"
-  estado varchar // "ACTIVO", "CERRADO"
-  fecha_inicio timestamp
-  fecha_fin timestamp
-  created_at timestamp
-  updated_at timestamp
+  id bigint [pk, increment]
+  nombre varchar [not null] // Ej: "Periodo 1/2026"
+  estado varchar [default: 'ACTIVO', not null] // "ACTIVO", "CERRADO"
+  fecha_inicio timestamp [null]
+  fecha_fin timestamp [null]
+  created_at timestamp [null]
+  updated_at timestamp [null]
+  deleted_at timestamp [null] // SoftDeletes
 }
 
 // ==========================================
 // 2. GESTIÓN DE TEAMS (EQUIPOS / AULAS)
 // ==========================================
 Table teams {
-  id int [pk, increment]
-  nombre varchar // Ej: "Los Únicos", "Sembradores de Paz"
-  ciclo_id int [ref: > ciclos.id]
-  created_at timestamp
-  updated_at timestamp
+  id bigint [pk, increment]
+  nombre varchar [not null]
+  ciclo_id bigint [ref: > ciclos.id, not null] // Relación con ciclos (cascade)
+  logo varchar [null] // Ruta del archivo en storage
+  created_at timestamp [null]
+  updated_at timestamp [null]
+  deleted_at timestamp [null] // SoftDeletes
 }
 
 // ==========================================
 // 3. USUARIOS (Adaptado a Laravel + Spatie)
 // ==========================================
 Table users {
-  id int [pk, increment]
-  registro_universitario varchar [unique, not null] // El que usan para loguearse
-  name varchar
-  email varchar [null, unique]
+  id bigint [pk, increment]
+  registro_universitario varchar [unique, not null] // Clave para el login
+  name varchar [not null] // Nombre completo oficial
+  alias varchar [unique, not null] // Obligatorio y único para la plataforma
+  email varchar [unique, not null] // Obligatorio y único
   email_verified_at timestamp [null]
-  password varchar
-  team_id int [ref: > teams.id, null] // Null si es admin general
+  password varchar [not null]
+  avatar varchar [null] // Foto o insignia de perfil
+  team_id bigint [ref: > teams.id, null] // Relación con equipos (set null)
   remember_token varchar [null]
-  created_at timestamp
-  updated_at timestamp
+  created_at timestamp [null]
+  updated_at timestamp [null]
 }
 
 // ==========================================

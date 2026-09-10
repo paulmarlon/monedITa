@@ -24,4 +24,16 @@ class Ciclo extends Model
         'fecha_inicio' => 'datetime',
         'fecha_fin' => 'datetime',
     ];
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
+    }
+    public function transacciones()
+    {
+        return $this->hasMany(Transaccion::class);
+    }
+    public function causaComun()
+    {
+        return $this->hasMany(CausaComun::class);
+    }
 }

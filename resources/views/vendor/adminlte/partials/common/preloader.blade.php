@@ -42,20 +42,24 @@
 <div id="adminlte-preloader" class="{{ $preloaderClasses }}" style="{{ implode(';', $preloaderStyles) }}">
 
     @hasSection('preloader')
-
         {{-- Use a custom preloader content --}}
         @yield('preloader')
-
     @else
+        {{-- Verificamos si hay un logo guardado en la configuración de forma segura --}}
+        @php
+            $config = \App\Models\Configuracion::first();
+            $logoPath = $config->logo ?? null;
 
-        {{-- Use the default preloader content --}}
-        <img src="{{ asset(config('adminlte.preloader.img.path', 'vendor/adminlte/dist/assets/img/AdminLTELogo.png')) }}"
-             class="rounded-circle {{ $imgEffect }}"
-             alt="{{ config('adminlte.preloader.img.alt', 'AdminLTE Preloader Image') }}"
-             width="{{ config('adminlte.preloader.img.width', 60) }}"
-             height="{{ config('adminlte.preloader.img.height', 60) }}"
-             style="{{ implode(';', $imgStyles) }}">
+            $imgSrc = $logoPath
+                ? asset('storage/' . $logoPath)
+                : asset(config('adminlte.preloader.img.path', 'vendor/adminlte/dist/assets/img/AdminLTELogo.png'));
+            $imgAlt = $logoPath ? 'Logo del Sistema' : config('adminlte.preloader.img.alt', 'AdminLTE Preloader Image');
+        @endphp
 
+        {{-- Única etiqueta de imagen dinámica y con respaldo automático --}}
+        <img src="{{ $imgSrc }}" class="rounded-circle {{ $imgEffect }}" alt="{{ $imgAlt }}"
+            width="{{ config('adminlte.preloader.img.width', 60) }}"
+            height="{{ config('adminlte.preloader.img.height', 60) }}" style="{{ implode(';', $imgStyles) }}">
     @endif
 
 </div>
@@ -80,7 +84,7 @@
         'use strict';
         const preloader = document.getElementById('adminlte-preloader');
 
-        if (! preloader) {
+        if (!preloader) {
             return;
         }
 

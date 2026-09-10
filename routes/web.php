@@ -3,6 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CicloController;
+use App\Http\Controllers\TeamController;
+use App\Http\Controllers\WalletController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ConfiguracionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -10,8 +15,59 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-// Módulo de Ciclos (CRUD completo + Papelera independiente)
-Route::get('ciclos/trash', [CicloController::class, 'trash'])->name('ciclos.trash');
-Route::patch('ciclos/{id}/restore', [CicloController::class, 'restore'])->name('ciclos.restore');
-Route::resource('ciclos', CicloController::class);
+Route::get('/home', [HomeController::class, 'index'])->name('home');
+
+// Rutas protegidas globalmente para usuarios autenticados
+Route::middleware(['auth'])->group(function () {
+
+    // Configuración
+    Route::get('configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index')->middleware('can:ver_configuracion');
+    Route::put('configuracion/{configuracion}', [ConfiguracionController::class, 'update'])->name('configuracion.update')->middleware('can:editar_configuracion');
+
+    // Módulo de Ciclos (Trash + CRUD protegido por sus respectivos permisos)
+    Route::get('ciclos/trash', [CicloController::class, 'trash'])->name('ciclos.trash')->middleware('can:ver_ciclos');
+    Route::patch('ciclos/{id}/restore', [CicloController::class, 'restore'])->name('ciclos.restore')->middleware('can:editar_ciclos');
+
+    Route::resource('ciclos', CicloController::class)->middleware([
+        'index'   => 'can:ver_ciclos',
+        'create'  => 'can:crear_ciclos',
+        'store'   => 'can:crear_ciclos',
+        'show'    => 'can:ver_ciclos',
+        'edit'    => 'can:editar_ciclos',
+        'update'  => 'can:editar_ciclos',
+        'destroy' => 'can:eliminar_ciclos',
+    ]);
+
+    // Módulo de Teams / Equipos (Trash + CRUD protegido por sus respectivos permisos)
+    Route::get('teams/trash', [TeamController::class, 'trash'])->name('teams.trash')->middleware('can:ver_teams');
+    Route::patch('teams/{id}/restore', [TeamController::class, 'restore'])->name('teams.restore')->middleware('can:editar_teams');
+
+    Route::resource('teams', TeamController::class)->middleware([
+        'index'   => 'can:ver_teams',
+        'create'  => 'can:crear_teams',
+        'store'   => 'can:crear_teams',
+        'show'    => 'can:ver_teams',
+        'edit'    => 'can:editar_teams',
+        'update'  => 'can:editar_teams',
+        'destroy' => 'can:eliminar_teams',
+    ]);
+
+    // Módulo de Roles (Spatie) + Rutas personalizadas de Permisos
+    Route::resource('roles', RoleController::class)->middleware([
+        'index'   => 'can:ver_roles',
+        'create'  => 'can:crear_roles',
+        'store'   => 'can:crear_roles',
+        'show'    => 'can:ver_roles',
+        'edit'    => 'can:editar_roles',
+        'update'  => 'can:editar_roles',
+        'destroy' => 'can:eliminar_roles',
+    ]);
+
+    Route::get('roles/{role}/permissions', [RoleController::class, 'permissions'])->name('roles.permissions')->middleware('can:ver_roles');
+    Route::put('roles/{role}/permissions', [RoleController::class, 'updatePermissions'])->name('roles.updatePermissions')->middleware('can:editar_roles');
+
+    // Módulo de Wallet / Monedero
+    Route::get('/wallet', [WalletController::class, 'index'])->name('wallets.index')->middleware('can:ver_wallet');
+    Route::post('/wallet/transferir', [WalletController::class, 'transferir'])->name('wallets.transferir')->middleware('can:transferir_wallet');
+    Route::post('/admin/wallet/acreditar', [WalletController::class, 'acreditar'])->name('wallets.acreditar')->middleware('can:acreditar_wallet');
+});

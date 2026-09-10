@@ -18,19 +18,17 @@
     <form action="{{ $loginUrl }}" method="post">
         @csrf
 
-        {{-- Email field --}}
-        <label for="email" class="visually-hidden">{{ __('adminlte::adminlte.email') }}</label>
+        {{-- Registro Universitario field --}}
+        <label for="registro_universitario" class="visually-hidden">Registro Universitario</label>
 
         <div class="input-group mb-3">
-            <input type="email" name="email" id="email"
-                class="form-control @error('email') is-invalid @enderror"
-                value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
-
             <div class="input-group-text">
-                <span class="bi bi-envelope {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                <span class="bi bi-person-badge {{ config('adminlte.classes_auth_icon', '') }}"></span>
             </div>
-
-            @error('email')
+            <input type="text" name="registro_universitario" id="registro_universitario"
+                class="form-control @error('registro_universitario') is-invalid @enderror"
+                value="{{ old('registro_universitario') }}" placeholder="Registro Universitario" required autofocus>
+            @error('registro_universitario')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
                 </span>
@@ -41,14 +39,12 @@
         <label for="password" class="visually-hidden">{{ __('adminlte::adminlte.password') }}</label>
 
         <div class="input-group mb-3">
-            <input type="password" name="password" id="password"
-                class="form-control @error('password') is-invalid @enderror"
-                placeholder="{{ __('adminlte::adminlte.password') }}">
-
             <div class="input-group-text">
                 <span class="bi bi-lock-fill {{ config('adminlte.classes_auth_icon', '') }}"></span>
             </div>
-
+            <input type="password" name="password" id="password"
+                class="form-control @error('password') is-invalid @enderror"
+                placeholder="{{ __('adminlte::adminlte.password') }}" required>
             @error('password')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -60,8 +56,8 @@
         <div class="row">
             <div class="col-7">
                 <div class="form-check" title="{{ __('adminlte::adminlte.remember_me_hint') }}">
-                    <input class="form-check-input" type="checkbox" name="remember"
-                           id="remember" {{ old('remember') ? 'checked' : '' }}>
+                    <input class="form-check-input" type="checkbox" name="remember" id="remember"
+                        {{ old('remember') ? 'checked' : '' }}>
                     <label class="form-check-label" for="remember">
                         {{ __('adminlte::adminlte.remember_me') }}
                     </label>
@@ -78,12 +74,12 @@
             </div>
         </div>
     </form>
-@include('adminlte::auth.social-links', ['fallbackText' => __('adminlte::adminlte.sign_in')])
+    @include('adminlte::auth.social-links', ['fallbackText' => __('adminlte::adminlte.sign_in')])
 @stop
 
 @section('auth_footer')
     {{-- Password reset link --}}
-    @if($passResetUrl)
+    @if ($passResetUrl)
         <p class="my-0">
             <a href="{{ $passResetUrl }}">
                 {{ __('adminlte::adminlte.i_forgot_my_password') }}
@@ -92,7 +88,7 @@
     @endif
 
     {{-- Register link --}}
-    @if($registerUrl)
+    @if ($registerUrl)
         <p class="my-0">
             <a href="{{ $registerUrl }}">
                 {{ __('adminlte::adminlte.register_a_new_membership') }}

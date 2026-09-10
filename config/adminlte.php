@@ -77,7 +77,7 @@ return [
     |
     */
 
-    'logo' => '<b>Admin</b>LTE',
+    'logo' => '<b>moned</b>ITa',
     'logo_img' => 'vendor/adminlte/dist/assets/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image opacity-75 shadow',
     'logo_img_xl' => null,
@@ -170,8 +170,8 @@ return [
     'usermenu_enabled' => true,
     'usermenu_header' => false,
     'usermenu_header_class' => 'bg-primary',
-    'usermenu_image' => false,
-    'usermenu_desc' => false,
+    'usermenu_image' => true,
+    'usermenu_desc' => true,
     'usermenu_profile_url' => false,
 
     /*
@@ -774,12 +774,40 @@ return [
 
     'menu' => [
         // Navbar items:
-
+        [
+            'text' => 'Configuración',
+            'route' => 'configuracion.index',
+            'icon' => 'bi bi-gear-fill me-1',
+            'classes' => 'btn-efecto-elevar text-warning',
+            'can' => 'ver_configuracion', // Oculto si no tiene el permiso
+        ],
         [
             'text' => 'Periodo',
             'route' => 'ciclos.index',
             'icon' => 'bi bi-calendar-event me-1',
             'classes' => 'btn-efecto-elevar text-info',
+            'can' => 'ver_ciclos', // Oculto si no tiene el permiso
+        ],
+        [
+            'text' => 'Equipos',
+            'route' => 'teams.index',
+            'icon' => 'bi bi-people me-1',
+            'classes' => 'btn-efecto-elevar text-info',
+            'can' => 'ver_teams', // Oculto si no tiene el permiso
+        ],
+        [
+            'text' => 'Monedero',
+            'route' => 'wallets.index',
+            'icon' => 'bi bi-wallet2 me-1',
+            'classes' => 'btn-efecto-elevar text-success',
+            'can' => 'ver_wallet', // Oculto si no tiene el permiso
+        ],
+        [
+            'text' => 'Gestión de Roles',
+            'route' => 'roles.index',
+            'icon' => 'bi bi-shield-lock me-1',
+            'classes' => 'btn-efecto-elevar text-info',
+            'can' => 'ver_roles', // Solo visible si el rol tiene el permiso ver_roles
         ],
 
         [
@@ -801,83 +829,8 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
-        [
-            'text' => 'blog',
-            'url' => 'admin/blog',
-            'can' => 'manage-blog',
-        ],
-        [
-            'text' => 'pages',
-            'url' => 'admin/pages',
-            'icon' => 'bi bi-file-earmark',
-            'label' => 4,
-            'label_color' => 'success',
-        ],
-        ['header' => 'account_settings'],
-        [
-            'text' => 'profile',
-            'url' => 'admin/settings',
-            'icon' => 'bi bi-person',
-        ],
-        [
-            'text' => 'change_password',
-            'url' => 'admin/settings',
-            'icon' => 'bi bi-lock',
-        ],
-        [
-            'text' => 'multilevel',
-            'icon' => 'bi bi-share',
-            'submenu' => [
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                    'submenu' => [
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                        ],
-                        [
-                            'text' => 'level_two',
-                            'url' => '#',
-                            'submenu' => [
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                                [
-                                    'text' => 'level_three',
-                                    'url' => '#',
-                                ],
-                            ],
-                        ],
-                    ],
-                ],
-                [
-                    'text' => 'level_one',
-                    'url' => '#',
-                ],
-            ],
-        ],
-        ['header' => 'labels'],
-        [
-            'text' => 'important',
-            'icon_color' => 'danger',
-            'url' => '#',
-        ],
-        [
-            'text' => 'warning',
-            'icon_color' => 'warning',
-            'url' => '#',
-        ],
-        [
-            'text' => 'information',
-            'icon_color' => 'info',
-            'url' => '#',
-        ],
+
+        // Puedes agregar más elementos del menú aquí y protegerlos igual con 'can' => '...'
     ],
 
     /*
@@ -1005,7 +958,7 @@ return [
          * modernos con barra de búsqueda integrada y soporte para selección múltiple.
          */
         'Select2' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',
@@ -1031,7 +984,7 @@ return [
          * de selección avanzados con etiquetas y opciones personalizables.
          */
         'TomSelect' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',

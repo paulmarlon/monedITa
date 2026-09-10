@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
+            $table->string('registro_universitario')->unique(); // Clave para el login
+            $table->string('name');                             // Nombre completo oficial (para auditoría/admin)
+            $table->string('alias')->unique();                  // Obligatorio y único para la plataforma
+            $table->string('email')->unique();                  // Obligatorio y único
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('avatar')->nullable();               // <-- Añadido aquí (foto o insignia de perfil)
+            $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null'); // Relación con el equipo
             $table->rememberToken();
             $table->timestamps();
         });

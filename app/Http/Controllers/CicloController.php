@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ciclo;
+use App\Models\CausaComun;
 use Illuminate\Http\Request;
 
 class CicloController extends Controller
@@ -44,7 +45,18 @@ class CicloController extends Controller
             'fecha_fin' => 'nullable|date|after_or_equal:fecha_inicio',
         ]);
 
-        Ciclo::create($request->all());
+        $ciclo = Ciclo::create($request->all());
+
+        // ==========================================
+        // AUTOMATIZACIÓN: Crear Fondo Común (Causa Dinosaurio)
+        // ==========================================
+        CausaComun::firstOrCreate(
+            ['ciclo_id' => $ciclo->id],
+            [
+                'total_acumulado' => 0.00,
+                'descripcion' => 'Fondo común del ciclo ' . $ciclo->nombre
+            ]
+        );
 
         return redirect()->route('ciclos.index')
             ->with('mensaje', 'Ciclo creado exitosamente.')
@@ -80,6 +92,19 @@ class CicloController extends Controller
         ]);
 
         $ciclo->update($request->all());
+
+        // ==========================================
+        // SEGURIDAD: Asegurar que si está activo tenga su fondo
+        // ==========================================
+        if ($ciclo->estado === 'ACTIVO') {
+            CausaComun::firstOrCreate(
+                ['ciclo_id' => $ciclo->id],
+                [
+                    'total_acumulado' => 0.00,
+                    'descripcion' => 'Fondo común del ciclo ' . $ciclo->nombre
+                ]
+            );
+        }
 
         return redirect()->route('ciclos.index')
             ->with('mensaje', 'Ciclo actualizado correctamente.')

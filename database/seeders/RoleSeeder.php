@@ -37,6 +37,16 @@ class RoleSeeder extends Seeder
             'ver_wallet',
             'transferir_wallet',
             'acreditar_wallet',
+            // --- NUEVOS PERMISOS DE JUEGOS ---
+            'ver_juegos',
+            'crear_juegos',
+            'editar_juegos',
+            'eliminar_juegos',
+            // --- PERMISOS DE PUNTAJES / HISTORIAL ---
+            'ver_puntajes',         // Para Admin/Supervisor (ver todos)
+            //'eliminar_puntajes',    // Para Admin/Supervisor
+            //'ver_mis_puntajes',
+            'ver_dino',
         ];
 
         // Crear todos los permisos si no existen
@@ -53,12 +63,24 @@ class RoleSeeder extends Seeder
             'ver_teams',
             'ver_wallet',
             'acreditar_wallet',
+            // --- NUEVOS PERMISOS DE JUEGOS ---
+            'ver_juegos',
+            'ver_puntajes',         // Para Admin/Supervisor (ver todos)
+            //'eliminar_puntajes',    // Para Admin/Supervisor
+            //'ver_mis_puntajes',
+            'ver_dino',
         ]);
 
         // 5. Asignar permisos específicos al ESTUDIANTE (Uso de su monedero y transferencias)
         $estudiante->syncPermissions([
             'ver_wallet',
             'transferir_wallet',
+            // --- NUEVOS PERMISOS DE JUEGOS ---
+            //'ver_juegos',
+            'ver_puntajes',         // Para Admin/Supervisor (ver todos)
+            //'eliminar_puntajes',    // Para Admin/Supervisor
+            //'ver_mis_puntajes',
+            'ver_dino',
         ]);
     }
 }

@@ -7,7 +7,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ConfiguracionController, App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ConfiguracionController, App\Http\Controllers\ProfileController, App\Http\Controllers\JuegoController, App\Http\Controllers\MinijuegoPuntajeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -73,4 +73,46 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/wallet', [WalletController::class, 'index'])->name('wallets.index')->middleware('can:ver_wallet');
     Route::post('/wallet/transferir', [WalletController::class, 'transferir'])->name('wallets.transferir')->middleware('can:transferir_wallet');
     Route::post('/admin/wallet/acreditar', [WalletController::class, 'acreditar'])->name('wallets.acreditar')->middleware('can:acreditar_wallet');
+
+    Route::resource('juegos', JuegoController::class)->middleware([
+        'index'   => 'can:ver_juegos',
+        'create'  => 'can:crear_juegos',
+        'store'   => 'can:crear_juegos',
+        'show'    => 'can:ver_juegos',
+        'edit'    => 'can:editar_juegos',
+        'update'  => 'can:editar_juegos',
+        'destroy' => 'can:eliminar_juegos',
+    ]);
+    // Rutas de la Papelera protegidas con los permisos adecuados
+    Route::get('juegos-trash', [JuegoController::class, 'trash'])
+        ->name('juegos.trash')
+        ->middleware('can:ver_juegos'); // O un permiso específico como 'ver_papelera_juegos' si lo prefieres
+
+    Route::post('juegos-restore/{id}', [JuegoController::class, 'restore'])
+        ->name('juegos.restore')
+        ->middleware('can:editar_juegos'); // O 'restaurar_juegos'
+
+    Route::delete('juegos-force-delete/{id}', [JuegoController::class, 'forceDelete'])
+        ->name('juegos.forceDelete')
+        ->middleware('can:eliminar_juegos');
+    // Rutas de los puntajes (Cambiado a 'ver_puntajes' para que el estudiante también pueda entrar)
+    Route::get('minijuegos-puntajes', [MinijuegoPuntajeController::class, 'index'])
+        ->name('minijuegos-puntajes.index')
+        ->middleware('can:ver_puntajes');
+
+    // Vista para jugar al Dinosaurio (Protegido con el permiso 'ver_dino' del seeder)
+    Route::get('minijuegos/dino', function () {
+        return view('minijuegos.dino');
+    })->name('juegos.dino')
+        ->middleware('can:ver_dino');
+
+    // Ruta para descontar la ficha en la billetera al iniciar
+    Route::post('minijuegos/{slug}/iniciar', [MinijuegoPuntajeController::class, 'iniciarPartida'])
+        ->name('minijuegos.iniciar')
+        ->middleware('auth');
+
+    // Ruta para guardar el puntaje vía AJAX al terminar la partida
+    Route::post('minijuegos/guardar-puntaje', [MinijuegoPuntajeController::class, 'store'])
+        ->name('minijuegos.guardar')
+        ->middleware('auth');
 });

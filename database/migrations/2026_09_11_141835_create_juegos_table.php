@@ -13,7 +13,13 @@ return new class extends Migration
     {
         Schema::create('juegos', function (Blueprint $table) {
             $table->id();
+            $table->string('slug')->unique(); // 'dinosaurio_runner', 'piedra_papel_tijera'
+            $table->string('titulo'); // 'Dino Runner', etc.
+            $table->text('descripcion')->nullable();
+            $table->decimal('costo_ficha', 10, 2)->default(0.00);
+            $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

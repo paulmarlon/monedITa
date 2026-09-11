@@ -788,6 +788,7 @@ return [
             'classes' => 'btn-efecto-elevar text-warning',
             'can' => 'ver_configuracion', // Oculto si no tiene el permiso
         ],
+
         [
             'text' => 'Periodo',
             'route' => 'ciclos.index',
@@ -815,6 +816,27 @@ return [
             'icon' => 'bi bi-shield-lock me-1',
             'classes' => 'btn-efecto-elevar text-info',
             'can' => 'ver_roles', // Solo visible si el rol tiene el permiso ver_roles
+        ],
+        [
+            'text' => 'Minijuegos',
+            'route' => 'juegos.index',
+            'icon' => 'bi bi-controller me-1',
+            'classes' => 'btn-efecto-elevar text-success',
+            'can' => 'ver_juegos', // Oculto si no tiene el permiso
+        ],
+        [
+            'text' => 'Dino Runner 🦖',
+            'route' => 'juegos.dino', // O la ruta que estés usando para el juego
+            'icon' => 'bi bi-lightning-charge me-1',
+            'classes' => 'btn-efecto-elevar text-warning',
+            'can' => 'ver_dino', // <--- Condicionado al permiso del estudiante
+        ],
+        [
+            'text' => 'Historial de Puntajes',
+            'route' => 'minijuegos-puntajes.index',
+            'icon' => 'bi bi-trophy me-1',
+            'classes' => 'btn-efecto-elevar text-warning',
+            'can' => 'ver_puntajes', // Solo visible si tiene permisos
         ],
 
         [

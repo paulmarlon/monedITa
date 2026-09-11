@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Ciclo;
+use App\Models\Juego;
+use \App\Models\Team;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
@@ -85,5 +87,27 @@ class DatabaseSeeder extends Seeder
                 'fecha_fin'    => '2026-12-31 23:59:59',
             ]
         );
+        // 7. Crear el registro por defecto del minijuego de Dinosaurio
+        Juego::firstOrCreate(
+            ['slug' => 'dinosaurio_runner'],
+            [
+                'titulo'       => 'Dino Runner F.E.S.',
+                'descripcion'  => 'El clásico juego del dinosaurio adaptado para la plataforma. Salta los obstáculos y acumula la mayor cantidad de puntos.',
+                'costo_ficha'  => 1.00,
+                'activo'       => true,
+            ]
+        );
+        // 8. Crear o asegurar un Team por defecto asociado al Ciclo Activo
+        $cicloActivo = Ciclo::where('estado', 'ACTIVO')->first();
+
+        if ($cicloActivo) {
+            Team::firstOrCreate(
+                ['nombre' => 'Equipo Teams'],
+                [
+                    'ciclo_id' => $cicloActivo->id,
+                    'logo'     => null,
+                ]
+            );
+        }
     } // <-- Aquí cierra correctamente el método run()
 }

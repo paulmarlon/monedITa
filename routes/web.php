@@ -7,7 +7,7 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\ConfiguracionController, App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -20,6 +20,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 // Rutas protegidas globalmente para usuarios autenticados
 Route::middleware(['auth'])->group(function () {
 
+    // Rutas de Perfil (¡ESTO ERA LO QUE FALTABA!)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Configuración
     Route::get('configuracion', [ConfiguracionController::class, 'index'])->name('configuracion.index')->middleware('can:ver_configuracion');
     Route::put('configuracion/{configuracion}', [ConfiguracionController::class, 'update'])->name('configuracion.update')->middleware('can:editar_configuracion');

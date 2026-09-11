@@ -775,6 +775,13 @@ return [
     'menu' => [
         // Navbar items:
         [
+            'text' => 'Perfil',
+            'route' => 'profile.edit',
+            'icon' => 'bi bi-person-badge me-1',
+            'classes' => 'btn-efecto-elevar text-body bg-transparent', // Cambiado text-primary por text-body y agregado bg-transparent
+            'topnav_user' => true,
+        ],
+        [
             'text' => 'Configuración',
             'route' => 'configuracion.index',
             'icon' => 'bi bi-gear-fill me-1',

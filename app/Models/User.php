@@ -47,11 +47,17 @@ class User extends Authenticatable
     }
     public function getAdminlteImageAttribute()
     {
-        return $this->avatar ?? asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png');
+        if ($this->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->avatar)) {
+            return asset('storage/' . $this->avatar);
+        }
+        return asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png'); // O cambia por una neutral si prefieres
     }
     public function adminlte_image()
     {
-        return $this->avatar ?? asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png');
+        if ($this->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->avatar)) {
+            return asset('storage/' . $this->avatar);
+        }
+        return asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png');
     }
     protected static function booted()
     {

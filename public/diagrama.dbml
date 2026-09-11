@@ -101,3 +101,27 @@ Table minijuegos_puntajes {
   puntaje int
   created_at timestamp
 }
+// ==========================================
+// CATÁLOGO DE MINIJUEGOS (NUEVA TABLA AUXILIAR)
+// ==========================================
+Table juegos {
+  id int [pk, increment]
+  slug varchar [unique, not null] // Identificador único: 'dinosaurio_runner', 'piedra_papel_tijera'
+  titulo varchar [not null] // Nombre visual: 'Dino Runner', 'Piedra, Papel o Tijera'
+  descripcion text [null]
+  costo_ficha decimal(10,2) [default: 0.00] // Costo para jugar si aplica
+  activo boolean [default: true] // Para habilitar/deshabilitar el juego
+  created_at timestamp
+  updated_at timestamp
+}
+
+// ==========================================
+// REGISTRO DE PUNTAJES Y RÉCORDS
+// ==========================================
+Table minijuegos_puntajes {
+  id int [pk, increment]
+  user_id int [ref: > users.id, not null]
+  juego_id int [ref: > juegos.id, not null] // Relación directa con la tabla juegos
+  puntaje int [not null]
+  created_at timestamp
+}

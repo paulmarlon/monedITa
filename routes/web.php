@@ -7,10 +7,11 @@ use App\Http\Controllers\TeamController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ConfiguracionController, App\Http\Controllers\ProfileController, App\Http\Controllers\JuegoController, App\Http\Controllers\MinijuegoPuntajeController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Auth::routes();
@@ -19,6 +20,10 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 
 // Rutas protegidas globalmente para usuarios autenticados
 Route::middleware(['auth'])->group(function () {
+    // ==========================================
+    // PANEL DE INFORMACIÓN / ESTADÍSTICAS (¡AQUÍ VA!)
+    // ==========================================
+    Route::get('/informacion', DashboardController::class)->name('dashboard.info');
 
     // Rutas de Perfil (¡ESTO ERA LO QUE FALTABA!)
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -858,6 +858,14 @@ return [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
+        [
+            'text' => 'Panel de Información',
+            'route' => 'dashboard.info',
+            'icon' => 'bi bi-bar-chart-fill me-1', // Ícono representativo de estadísticas
+            'classes' => 'btn-efecto-elevar text-primary',
+            // Como acordamos que no lleva restricción de permiso estricta
+            // para los usuarios logueados, puedes omitir la clave 'can' o dejarla libre.
+        ],
 
         // Puedes agregar más elementos del menú aquí y protegerlos igual con 'can' => '...'
     ],

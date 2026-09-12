@@ -33,7 +33,7 @@
 
                             <!-- Pantalla de inicio superpuesta -->
                             <div id="dino-screen"
-                                class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-dark bg-opacity-75 text-white">
+                                class="position-absolute top-0 left-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center bg-dark bg-opacity-75 text-white">
                                 <h4 class="fw-bold">T-Rex Runner</h4>
                                 <p class="text-light mb-3">Haz clic para comenzar a jugar</p>
                                 <button id="start-btn" class="btn btn-primary shadow">¡Iniciar Partida!</button>

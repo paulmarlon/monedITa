@@ -215,33 +215,40 @@
                                             <span class="fw-bold text-body ms-1" style="font-size: 0.85rem;">
                                                 {{ $teamNombre }}
                                             </span>
-                                            <span class="fw-bold text-body ms-1" style="font-size: 0.85rem;">
+                                            <span class="text-muted" style="font-size: 0.8rem;">•</span>
+                                            <span class="fw-bold text-body" style="font-size: 0.85rem;">
                                                 {{ $userAlias }}
                                             </span>
 
                                             @if ($userAvatarUrl)
                                                 <img src="{{ $userAvatarUrl }}" alt="{{ $userAlias }}"
                                                     class="rounded-circle border border-2 border-white shadow-sm flex-shrink-0"
-                                                    style="width: 40px; height: 40px; object-fit: cover;"
+                                                    style="width: 32px; height: 32px; object-fit: cover;"
                                                     title="Usuario: {{ $userAlias }}">
                                             @else
                                                 <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center shadow-sm flex-shrink-0 border border-white"
-                                                    style="width: 40px; height: 40px; font-size: 0.7rem;"
+                                                    style="width: 32px; height: 32px; font-size: 0.7rem;"
                                                     title="Usuario: {{ $userAlias }}">
-                                                    <i class="{{ $currentIcon }}" style="font-size: 0.9rem;"></i>
+                                                    <i class="{{ $currentIcon }}" style="font-size: 0.8rem;"></i>
                                                 </div>
                                             @endif
                                         </div>
 
-                                        <span class="badge bg-secondary"
-                                            style="font-size: 0.7rem;">{{ $puntaje->juego_titulo }}</span>
+                                        <!-- Badge destacado con el puntaje exacto a la derecha (igual que en Equipos) -->
+                                        <div class="d-flex align-items-center gap-1">
+                                            <span class="badge bg-secondary"
+                                                style="font-size: 0.65rem;">{{ $puntaje->juego_titulo }}</span>
+                                            <span class="badge bg-info px-2 py-1"
+                                                style="font-size: 0.8rem;">{{ number_format($puntaje->puntaje ?? 0, 0) }}
+                                                Pts</span>
+                                        </div>
                                     </div>
 
                                     <x-adminlte-progress :theme="$currentTheme" :value="$porcentaje" size="xs" animated
                                         with-label class="mb-0">
                                         <x-slot name="labelSlot"><span
-                                                style="font-size: 0.7rem; font-weight: 600;">{{ $puntaje->puntaje }}
-                                                Pts</span></x-slot>
+                                                style="font-size: 0.7rem; font-weight: 600;">Progreso respecto al
+                                                líder</span></x-slot>
                                     </x-adminlte-progress>
                                 </div>
                             @empty

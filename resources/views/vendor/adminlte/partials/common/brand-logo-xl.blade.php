@@ -4,8 +4,16 @@
     $dashboard_url = View::getSection('dashboard_url') ?? config('adminlte.dashboard_url', 'home');
     $dashboard_url = $layoutHelper->makeUrl($dashboard_url);
 
-    $logoImg = asset(config('adminlte.logo_img', 'vendor/adminlte/dist/assets/img/AdminLTELogo.png'));
-    $logoImgXl = asset(config('adminlte.logo_img_xl'));
+    // --- INICIO: Consulta dinámica de la base de datos ---
+    $configLogo = \Illuminate\Support\Facades\Schema::hasTable('configuracions')
+        ? \Illuminate\Support\Facades\DB::table('configuracions')->first()
+        : null;
+
+    $dynamicLogo = $configLogo && !empty($configLogo->logo) ? asset('storage/' . $configLogo->logo) : null;
+    // --- FIN ---
+
+    $logoImg = $dynamicLogo ?? asset(config('adminlte.logo_img', 'vendor/adminlte/dist/assets/img/AdminLTELogo.png'));
+    $logoImgXl = $dynamicLogo ?? asset(config('adminlte.logo_img_xl'));
     $logoImgAlt = config('adminlte.logo_img_alt', 'Admin Logo');
     $brandClass = config('adminlte.classes_brand', '');
 
@@ -25,27 +33,20 @@
             return preg_replace('/\bbrand-image\b/', $size, $classes);
         }
 
-        return trim($classes.' '.$size);
+        return trim($classes . ' ' . $size);
     };
 
-    $logoImgClass = $sizeClass(
-        config('adminlte.logo_img_class', 'brand-image opacity-75 shadow'), 'brand-image-xl'
-    );
+    $logoImgClass = $sizeClass(config('adminlte.logo_img_class', 'brand-image opacity-75 shadow'), 'brand-image-xl');
 
-    $logoImgXlClass = $sizeClass(
-        config('adminlte.logo_img_xl_class', 'brand-image-xs opacity-75'), 'brand-image-xs'
-    );
+    $logoImgXlClass = $sizeClass(config('adminlte.logo_img_xl_class', 'brand-image-xs opacity-75'), 'brand-image-xs');
 @endphp
 
-@if($layoutHelper->isLayoutTopnavEnabled())
-
+@if ($layoutHelper->isLayoutTopnavEnabled())
     {{-- Navbar Brand (topnav layout, the logo switch requires a sidebar) --}}
     <a href="{{ $dashboard_url }}" class="navbar-brand d-flex align-items-center {{ $brandClass }}">
         <img src="{{ $logoImgXl }}" alt="{{ $logoImgAlt }}" height="30" class="opacity-75">
     </a>
-
 @else
-
     {{-- Sidebar Brand (logo switch variant) --}}
     <div class="sidebar-brand">
         <a href="{{ $dashboard_url }}" class="brand-link logo-switch {{ $brandClass }}">
@@ -58,5 +59,4 @@
 
         </a>
     </div>
-
 @endif

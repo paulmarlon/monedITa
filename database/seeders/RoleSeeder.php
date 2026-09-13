@@ -61,6 +61,8 @@ class RoleSeeder extends Seeder
         $supervisor->syncPermissions([
             'ver_ciclos',
             'ver_teams',
+            'crear_teams',
+            'editar_teams',
             'ver_wallet',
             'acreditar_wallet',
             // --- NUEVOS PERMISOS DE JUEGOS ---
@@ -73,6 +75,8 @@ class RoleSeeder extends Seeder
 
         // 5. Asignar permisos específicos al ESTUDIANTE (Uso de su monedero y transferencias)
         $estudiante->syncPermissions([
+            'ver_teams',
+
             'ver_wallet',
             'transferir_wallet',
             // --- NUEVOS PERMISOS DE JUEGOS ---

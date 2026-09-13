@@ -1,3 +1,14 @@
+@php
+    // Consultamos la base de datos para inyectar el logo dinámicamente en la configuración de la app
+    $configLogo = \Illuminate\Support\Facades\Schema::hasTable('configuracions')
+        ? \Illuminate\Support\Facades\DB::table('configuracions')->first()
+        : null;
+
+    if ($configLogo && !empty($configLogo->logo)) {
+        config(['adminlte.logo_img' => 'storage/' . $configLogo->logo]);
+    }
+@endphp
+
 @extends('adminlte::auth.auth-page', ['authType' => 'login'])
 
 @inject('layoutHelper', 'JeroenNoten\LaravelAdminLte\Helpers\LayoutHelper')

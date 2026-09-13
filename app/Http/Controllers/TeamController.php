@@ -10,6 +10,17 @@ use Illuminate\Support\Facades\Storage;
 class TeamController extends Controller
 {
     /**
+     * Constructor para aplicar los middlewares de permisos de Spatie.
+     */
+    public function __construct()
+    {
+        $this->middleware('can:ver_teams')->only(['index', 'show', 'trash']);
+        $this->middleware('can:crear_teams')->only(['create', 'store']);
+        $this->middleware('can:editar_teams')->only(['edit', 'update', 'restore']);
+        $this->middleware('can:eliminar_teams')->only(['destroy']);
+    }
+
+    /**
      * Muestra la lista de equipos activos con su ciclo relacionado.
      */
     public function index()

@@ -144,20 +144,9 @@
             </div>
 
             <!-- Tabla de Historial Compacto (Últimas 5 transacciones interactivas) -->
-            <!-- Tabla de Historial con Paginación -->
-            <!-- Tabla de Historial Responsiva (Cerrada en móviles, abierta en PC) -->
             <div class="col-lg-8 col-md-6">
                 <div class="card mt-4 mt-lg-0">
-                    <div class="card-header py-2 d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0 text-sm">
-                            <i class="bi bi-clock-history"></i> Historial Reciente
-                        </h3>
-                        <!-- Botón desplegable adaptativo para modo claro y oscuro -->
-                        <button class="btn btn-tool p-0 d-lg-none" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseHistorial" aria-expanded="false" aria-controls="collapseHistorial">
-                            <i class="bi bi-chevron-down"></i> Desplegar
-                        </button>
-                    </div>
+                    <!-- Único encabezado limpio -->
                     <div class="card-header py-2 d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0 text-sm">
                             <i class="bi bi-clock-history"></i> Historial Reciente

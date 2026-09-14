@@ -9,28 +9,28 @@ class SessionAuditController extends Controller
 {
     public function index()
     {
-        // Consultamos las sesiones activas unidas con la tabla users para ver el nombre/alias
-        $sesiones = DB::table('sessions')
-            ->leftJoin('users', 'sessions.user_id', '=', 'users.id')
+        // Apuntamos explícitamente al esquema integrador.sessions
+        $sesiones = DB::table('integrador.sessions')
+            ->leftJoin('users', 'integrador.sessions.user_id', '=', 'users.id')
             ->select(
-                'sessions.id as session_id',
-                'sessions.ip_address',
-                'sessions.user_agent',
-                'sessions.last_activity',
+                'integrador.sessions.id as session_id',
+                'integrador.sessions.ip_address',
+                'integrador.sessions.user_agent',
+                'integrador.sessions.last_activity',
                 'users.name as user_name',
                 'users.email as user_email',
                 'users.alias as user_alias'
             )
-            ->orderByDesc('sessions.last_activity')
+            ->orderByDesc('integrador.sessions.last_activity')
             ->get();
 
         return view('admin.sessions.index', compact('sesiones'));
     }
 
-    // Opcional: Permitir al admin expulsar/cerrar la sesión de alguien por la fuerza
-    public function destroy(int $id)
+    // Permitir al admin expulsar/cerrar la sesión de alguien por la fuerza
+    public function destroy(string $id) // Nota: el ID de sessions en Laravel suele ser string (varchar), cámbialo de int a string para evitar errores de tipo.
     {
-        DB::table('sessions')->where('id', $id)->delete();
+        DB::table('integrador.sessions')->where('id', $id)->delete();
 
         return redirect()->route('admin.sessions.index')
             ->with('success', 'Sesión cerrada y usuario expulsado correctamente.');

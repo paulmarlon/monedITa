@@ -9,7 +9,12 @@
         ? \Illuminate\Support\Facades\DB::table('configuracions')->first()
         : null;
 
-    $dynamicLogo = $configLogo && !empty($configLogo->logo) ? asset('storage/' . $configLogo->logo) : null;
+    $dynamicLogo = null;
+    if ($configLogo && !empty($configLogo->logo)) {
+        $dynamicLogo = str_starts_with($configLogo->logo, 'http')
+            ? $configLogo->logo
+            : asset('storage/' . $configLogo->logo);
+    }
     // --- FIN ---
 
     $logoImg = $dynamicLogo ?? asset(config('adminlte.logo_img', 'vendor/adminlte/dist/assets/img/AdminLTELogo.png'));

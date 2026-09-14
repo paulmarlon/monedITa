@@ -13,11 +13,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+
+        // 1. Confiar en los proxies de Render para detectar HTTPS correctamente
+        $middleware->trustProxies(at: '*');
+
         // 2. Agrégalo al grupo web para que vigile todas las rutas de la aplicación
         $middleware->web(append: [
             CheckInactivity::class,
         ]);
-        //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

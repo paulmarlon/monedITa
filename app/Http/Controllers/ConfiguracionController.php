@@ -50,6 +50,7 @@ class ConfiguracionController extends Controller
 
         // Manejo de la subida del Logotipo
         // Manejo de la subida del Logotipo
+        // Manejo de la subida del Logotipo
         if ($request->hasFile('logo')) {
             // Si ya existía un logo previo, lo eliminamos de S3 de forma segura
             if ($configuracion->logo) {
@@ -66,11 +67,11 @@ class ConfiguracionController extends Controller
             // Guardamos el nuevo archivo directamente en el disco S3
             $path = $request->file('logo')->store('tapita/logos', 's3');
 
-            /** @var \Illuminate\Filesystem\FilesystemAdapter $s3 */
-            $s3 = Storage::disk('s3');
+            // Construimos explícitamente la URL pública web de Supabase (/object/public/)
+            $baseUrl = rtrim(env('AWS_ENDPOINT'), '/s3');
+            $bucket = env('AWS_BUCKET');
 
-            // Guardamos la URL pública completa sin errores del linter
-            $data['logo'] = $s3->url($path);
+            $data['logo'] = "{$baseUrl}/object/public/{$bucket}/{$path}";
         }
 
         // Actualizamos el registro

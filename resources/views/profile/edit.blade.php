@@ -47,25 +47,22 @@
                                 <div class="col-md-10">
                                     <div
                                         class="d-flex align-items-center justify-content-center px-3 py-2 border rounded bg-body shadow-sm">
-                                        <!-- Avatar Usuario -->
                                         <div class="text-center">
                                             <img id="avatar-preview"
-                                                src="{{ $user->avatar ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar)) : asset('vendor/adminlte/dist/assets/img/avatar.png') }}"
+                                                src="{{ $user->avatar ? $user->avatar : asset('vendor/adminlte/dist/assets/img/avatar.png') }}"
                                                 alt="Usuario" class="rounded-circle border shadow-sm" width="55"
                                                 height="55" style="object-fit: cover;">
                                         </div>
 
-                                        <!-- Flecha central sutil -->
                                         <div class="text-center px-4">
                                             <span class="text-muted fs-4">
                                                 <i class="bi bi-arrow-right"></i>
                                             </span>
                                         </div>
 
-                                        <!-- Logo Equipo -->
                                         <div class="text-center">
                                             <img id="teamLogoPreview"
-                                                src="{{ $user->team && $user->team->logo ? (str_starts_with($user->team->logo, 'http') ? $user->team->logo : asset('storage/' . $user->team->logo)) : asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png') }}"
+                                                src="{{ $user->team && $user->team->logo ? $user->team->logo : asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png') }}"
                                                 alt="Equipo" class="rounded-circle border shadow-sm" width="55"
                                                 height="55" style="object-fit: cover;">
                                         </div>
@@ -139,7 +136,7 @@
                                             <option value="">-- Sin equipo asignado --</option>
                                             @foreach ($teams as $team)
                                                 <option value="{{ $team->id }}"
-                                                    data-logo="{{ $team->logo ? asset('storage/' . $team->logo) : asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png') }}"
+                                                    data-logo="{{ $team->logo ? $team->logo : asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png') }}"
                                                     data-name="{{ $team->nombre }}"
                                                     {{ old('team_id', $user->team_id) == $team->id ? 'selected' : '' }}>
                                                     {{ $team->nombre }}

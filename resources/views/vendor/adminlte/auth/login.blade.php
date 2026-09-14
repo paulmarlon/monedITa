@@ -1,3 +1,9 @@
+@section('title', $configGlobal->nombre ?? '@tech')
+
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+@stop
 @php
     // Consultamos la base de datos para inyectar el logo dinámicamente en la configuración de la app
     $configLogo = \Illuminate\Support\Facades\Schema::hasTable('configuracions')

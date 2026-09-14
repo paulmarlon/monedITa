@@ -39,7 +39,7 @@
 
     // The OverlayScrollbars setup only makes sense when there is a sidebar.
 
-    $setupScrollbars = $overlayScrollbarsJs && ! $layoutHelper->isLayoutTopnavEnabled();
+    $setupScrollbars = $overlayScrollbarsJs && !$layoutHelper->isLayoutTopnavEnabled();
 
     // Extra options for the OverlayScrollbars instance of the sidebar. They
     // are merged into the 'scrollbars' object of its setup, so they may also
@@ -47,21 +47,21 @@
 
     $scrollbarOptions = config('adminlte.sidebar_scrollbar_options', []);
 
-    $scrollbarExtraOptions = is_array($scrollbarOptions) && ! empty($scrollbarOptions)
-        ? "\n".str_repeat(' ', 32).'...'.json_encode(
-            $scrollbarOptions,
-            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT
-        ).','
-        : '';
+    $scrollbarExtraOptions =
+        is_array($scrollbarOptions) && !empty($scrollbarOptions)
+            ? "\n" .
+                str_repeat(' ', 32) .
+                '...' .
+                json_encode($scrollbarOptions, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) .
+                ','
+            : '';
 
     // The viewport width (in pixels) at or below which the OverlayScrollbars
     // instance is not created, so touch scrolling is not disturbed.
 
     $scrollbarDisableBelow = config('adminlte.sidebar_scrollbar_disable_below', 992);
 
-    $scrollbarDisableBelow = is_numeric($scrollbarDisableBelow)
-        ? 0 + $scrollbarDisableBelow
-        : 992;
+    $scrollbarDisableBelow = is_numeric($scrollbarDisableBelow) ? 0 + $scrollbarDisableBelow : 992;
 
     // The theme (a class name) of the sidebar scrollbars. OverlayScrollbars
     // expects a string here, anything else would be dropped by the plugin
@@ -69,9 +69,8 @@
 
     $scrollbarTheme = config('adminlte.sidebar_scrollbar_theme', 'os-theme-light');
 
-    $scrollbarTheme = is_string($scrollbarTheme) && trim($scrollbarTheme) !== ''
-        ? trim($scrollbarTheme)
-        : 'os-theme-light';
+    $scrollbarTheme =
+        is_string($scrollbarTheme) && trim($scrollbarTheme) !== '' ? trim($scrollbarTheme) : 'os-theme-light';
 
     // The event that hides the sidebar scrollbars again. Only the tokens of
     // the OverlayScrollbars plugin are accepted, so an unsupported one does
@@ -98,7 +97,7 @@
     {{-- Base Meta Tags --}}
     <meta charset="utf-8">
 
-    @if(config('adminlte.color_mode.no_flash_script', true))
+    @if (config('adminlte.color_mode.no_flash_script', true))
         {{-- Theme Init (prevents a flash of the incorrect color mode on load) --}}
         <script>
             (() => {
@@ -115,7 +114,7 @@
                 const authored = @json($authoredColorMode);
                 let stored = null;
 
-                @if($rememberColorMode)
+                @if ($rememberColorMode)
                     try {
                         stored = localStorage.getItem(STORAGE_KEY);
                     } catch (e) {
@@ -156,11 +155,11 @@
     @php($lightThemeColor = config('adminlte.color_mode.theme_color.light'))
     @php($darkThemeColor = config('adminlte.color_mode.theme_color.dark'))
 
-    @if($lightThemeColor)
+    @if ($lightThemeColor)
         <meta name="theme-color" content="{{ $lightThemeColor }}" media="(prefers-color-scheme: light)">
     @endif
 
-    @if($darkThemeColor)
+    @if ($darkThemeColor)
         <meta name="theme-color" content="{{ $darkThemeColor }}" media="(prefers-color-scheme: dark)">
     @endif
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -227,7 +226,7 @@
     @include('adminlte::plugins', ['type' => 'css'])
 
     {{-- Livewire Styles --}}
-    @if(config('adminlte.livewire'))
+    @if (config('adminlte.livewire'))
         @livewireStyles
     @endif
 
@@ -238,7 +237,7 @@
     @yield('adminlte_css')
 
     {{-- Favicon --}}
-    @if(config('adminlte.use_ico_only'))
+    @if (config('adminlte.use_ico_only'))
         <link rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}" />
     @elseif(config('adminlte.use_full_favicon'))
         <link rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}" />
@@ -269,12 +268,12 @@
 
     {{-- Third Party Plugin (OverlayScrollbars) --}}
     @isset($overlayScrollbarsJs)
-        <script src="{{ $overlayScrollbarsJs }}"{!! $crossOrigin($overlayScrollbarsJs) !!}></script>
+        <script src="{{ $overlayScrollbarsJs }}" {!! $crossOrigin($overlayScrollbarsJs) !!}></script>
     @endisset
 
     {{-- Required Plugin (Bootstrap 5) --}}
     @isset($bootstrapJs)
-        <script src="{{ $bootstrapJs }}"{!! $crossOrigin($bootstrapJs) !!}></script>
+        <script src="{{ $bootstrapJs }}" {!! $crossOrigin($bootstrapJs) !!}></script>
     @endisset
 
     {{-- Base Scripts (depends on the Laravel asset bundling tool) --}}
@@ -297,7 +296,7 @@
     {{-- Lifecycle helpers used by the inline scripts of the package --}}
     @include('adminlte::partials.common.lifecycle')
 
-    @if($setupScrollbars)
+    @if ($setupScrollbars)
         {{-- OverlayScrollbars Configuration (main sidebar) --}}
         <script>
             (() => {
@@ -309,7 +308,7 @@
                     scrollbarClickScroll: @json((bool) config('adminlte.sidebar_scrollbar_click_scroll', true)),
                 };
 
-                window._AdminLTE_Ready(function () {
+                window._AdminLTE_Ready(function() {
                     const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
 
                     // Disable OverlayScrollbars on mobile devices to prevent
@@ -326,7 +325,8 @@
                             scrollbars: {
                                 theme: Default.scrollbarTheme,
                                 autoHide: Default.scrollbarAutoHide,
-                                clickScroll: Default.scrollbarClickScroll,{!! $scrollbarExtraOptions !!}
+                                clickScroll: Default.scrollbarClickScroll,
+                                {!! $scrollbarExtraOptions !!}
                             },
                         });
                     }
@@ -339,7 +339,7 @@
     @include('adminlte::plugins', ['type' => 'js'])
 
     {{-- Livewire Script --}}
-    @if(config('adminlte.livewire'))
+    @if (config('adminlte.livewire'))
         @livewireScripts
     @endif
 

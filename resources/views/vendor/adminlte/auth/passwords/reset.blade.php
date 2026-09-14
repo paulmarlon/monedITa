@@ -20,8 +20,7 @@
         <label for="email" class="visually-hidden">{{ __('adminlte::adminlte.email') }}</label>
 
         <div class="input-group mb-3">
-            <input type="email" name="email" id="email"
-                class="form-control @error('email') is-invalid @enderror"
+            <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror"
                 value="{{ old('email') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
 
             <div class="input-group-text">

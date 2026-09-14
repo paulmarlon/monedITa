@@ -2,9 +2,17 @@
 
 @section('title', $configGlobal->nombre ?? '@tech')
 
-{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+{{-- Esto añade la imagen del logo como favicon de la pestaña validando Supabase --}}
 @section('adminlte_css_pre')
-    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+    @php
+        $faviconUrl =
+            $configGlobal && !empty($configGlobal->logo)
+                ? (str_starts_with($configGlobal->logo, 'http')
+                    ? $configGlobal->logo
+                    : asset('storage/' . $configGlobal->logo))
+                : asset('usb/don bosco.png');
+    @endphp
+    <link rel="icon" href="{{ $faviconUrl }}" type="image/png">
 @stop
 
 {{-- Activamos los plugins configurados globalmente --}}

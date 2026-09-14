@@ -47,9 +47,10 @@
                                 <div class="col-md-10">
                                     <div
                                         class="d-flex align-items-center justify-content-center px-3 py-2 border rounded bg-body shadow-sm">
+                                        <!-- Avatar Usuario -->
                                         <div class="text-center">
                                             <img id="avatar-preview"
-                                                src="{{ $user->avatar ? $user->avatar : asset('vendor/adminlte/dist/assets/img/avatar.png') }}"
+                                                src="{{ $user->avatar ? (str_starts_with($user->avatar, 'http') ? $user->avatar : rtrim(env('AWS_ENDPOINT'), '/s3') . '/object/public/' . env('AWS_BUCKET') . '/' . $user->avatar) : asset('vendor/adminlte/dist/assets/img/avatar.png') }}"
                                                 alt="Usuario" class="rounded-circle border shadow-sm" width="55"
                                                 height="55" style="object-fit: cover;">
                                         </div>

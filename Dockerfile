@@ -26,6 +26,7 @@ RUN composer install --no-dev --optimize-autoloader --verbose
 
 # Ajustar permisos de las carpetas de almacenamiento y caché de Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Configurar Apache para que apunte a la carpeta public de Laravel
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
@@ -33,9 +34,16 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 
+# Limpiar cualquier caché residual y generar la nueva limpia
+RUN php artisan config:clear \
+    && php artisan route:clear \
+    && php artisan view:clear \
+    && php artisan config:cache \
+    && php artisan route:cache
+
 # Render asigna dinámicamente un puerto a través de la variable $PORT
 ENV PORT=10000
 EXPOSE 10000
 
-# Comando de inicio: compila caché y arranca Apache
-CMD php artisan config:cache && php artisan route:cache && apache2-foreground
+# Comando de inicio: arrancar Apache directamente
+CMD ["apache2-foreground"]

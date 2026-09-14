@@ -38,8 +38,7 @@ RUN a2enmod rewrite
 RUN php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
-    && php artisan config:cache \
-    && php artisan route:cache
+    && php artisan config:cache
 
 # Render asigna dinámicamente un puerto a través de la variable $PORT
 ENV PORT=10000

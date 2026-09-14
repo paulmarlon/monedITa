@@ -86,7 +86,7 @@ return [
     |
     */
 
-    'table' => 'integrador.sessions',
+    'table' => env('SESSION_TABLE', 'sessions'),
 
     /*
     |--------------------------------------------------------------------------

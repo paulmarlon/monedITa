@@ -53,9 +53,14 @@
                                             <td class="fw-semibold">
                                                 <div class="d-flex align-items-center">
                                                     @if ($item->user && $item->user->avatar)
-                                                        {{-- Avatar del usuario --}}
-                                                        <img src="{{ asset('storage/' . $item->user->avatar) }}"
-                                                            alt="Avatar" class="rounded-circle me-2"
+                                                        {{-- Avatar del usuario (Validando URL de Supabase o local) --}}
+                                                        @php
+                                                            $avatarUrl = str_starts_with($item->user->avatar, 'http')
+                                                                ? $item->user->avatar
+                                                                : asset('storage/' . $item->user->avatar);
+                                                        @endphp
+                                                        <img src="{{ $avatarUrl }}" alt="Avatar"
+                                                            class="rounded-circle me-2"
                                                             style="width: 36px; height: 36px; object-fit: cover;">
                                                     @else
                                                         {{-- Avatar por defecto --}}
@@ -74,8 +79,18 @@
                                                             <span
                                                                 class="badge bg-light text-dark border d-inline-flex align-items-center mt-1">
                                                                 @if ($item->user->team->logo)
-                                                                    <img src="{{ asset('storage/' . $item->user->team->logo) }}"
-                                                                        alt="Logo Team" class="rounded-circle me-1"
+                                                                    @php
+                                                                        $teamLogoUrl = str_starts_with(
+                                                                            $item->user->team->logo,
+                                                                            'http',
+                                                                        )
+                                                                            ? $item->user->team->logo
+                                                                            : asset(
+                                                                                'storage/' . $item->user->team->logo,
+                                                                            );
+                                                                    @endphp
+                                                                    <img src="{{ $teamLogoUrl }}" alt="Logo Team"
+                                                                        class="rounded-circle me-1"
                                                                         style="width: 14px; height: 14px; object-fit: cover;">
                                                                 @else
                                                                     <i class="bi bi-shield-fill text-warning me-1"

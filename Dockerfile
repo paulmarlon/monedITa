@@ -42,10 +42,7 @@ RUN echo '<Directory /var/www/html/public/>\n\
 
 RUN a2enmod rewrite
 
-# Limpiar cualquier caché residual y generar la nueva limpia
-RUN php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear
+
 
 # Render asigna dinámicamente un puerto a través de la variable $PORT
 ENV PORT=10000

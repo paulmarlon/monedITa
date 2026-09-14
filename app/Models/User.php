@@ -54,10 +54,19 @@ class User extends Authenticatable
     }
     public function adminlte_image()
     {
-        if ($this->avatar && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->avatar)) {
+        // Si el usuario tiene un avatar registrado
+        if ($this->avatar) {
+            // Si ya es una URL completa de Supabase (http...) la retornamos directamente
+            if (str_starts_with($this->avatar, 'http')) {
+                return $this->avatar;
+            }
+
+            // Compatibilidad por si quedó alguna ruta vieja relativa
             return asset('storage/' . $this->avatar);
         }
-        return asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png');
+
+        // Imagen por defecto si no tiene avatar
+        return asset('vendor/adminlte/dist/assets/img/avatar.png');
     }
     protected static function booted()
     {

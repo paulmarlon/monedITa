@@ -1,13 +1,9 @@
-{{-- resources/views/dashboard.blade.php --}}
-
 @extends('adminlte::page')
 
 @section('title', $configGlobal->nombre ?? '@tech')
 
 {{-- Esto añade la imagen del logo como favicon de la pestaña --}}
-@section('adminlte_css_pre')
-    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
-@stop
+<link rel="icon" href="{{ $configGlobal->logo ?? asset('usb/don bosco.png') }}">
 
 @section('content_header')
     <div class="d-flex justify-content-between align-items-center">

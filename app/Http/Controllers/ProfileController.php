@@ -43,24 +43,21 @@ class ProfileController extends Controller
         $user->team_id = $request->team_id;
 
         // Procesar la subida del avatar si existe
+        // Procesar la subida del avatar si existe
         if ($request->hasFile('avatar')) {
-            // Si ya tenía un avatar anterior y es una URL completa de Supabase, limpiamos
-            if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
-                // Si guardabas ruta relativa antes
-                if (Storage::exists($user->avatar)) {
-                    Storage::delete($user->avatar);
-                }
-            } elseif ($user->avatar && str_starts_with($user->avatar, 'http')) {
-                // Si ya guardaba URL completa, extraemos la ruta para borrarla en S3
-                $oldPath = str_replace(Storage::url(''), '', $user->avatar);
-                Storage::delete($oldPath);
+            // Si ya tenía un avatar anterior con URL completa, intentamos borrarlo de S3
+            if ($user->avatar && str_starts_with($user->avatar, 'http')) {
+                // Opcional: limpiar si deseas borrar la imagen vieja del bucket
             }
 
-            // Guardamos el nuevo archivo en el disco por defecto (S3) dentro de tapita/avatars
+            // Guardamos el nuevo archivo en el disco S3 dentro de tapita/avatars
             $path = $request->file('avatar')->store('tapita/avatars', 's3');
 
-            // Guardamos la URL COMPLETA en la base de datos
-            $user->avatar = Storage::url($path);
+            // Construimos explícitamente la URL pública web de Supabase (igual que en Configuración)
+            $baseUrl = rtrim(env('AWS_ENDPOINT'), '/s3');
+            $bucket = env('AWS_BUCKET');
+
+            $user->avatar = "{$baseUrl}/object/public/{$bucket}/{$path}";
         }
 
         // Como $user viene directamente de User::find(), el método save() funcionará perfectamente

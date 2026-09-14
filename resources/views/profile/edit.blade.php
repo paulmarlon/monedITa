@@ -50,7 +50,7 @@
                                         <!-- Avatar Usuario -->
                                         <div class="text-center">
                                             <img id="avatar-preview"
-                                                src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('vendor/adminlte/dist/assets/img/avatar.png') }}"
+                                                src="{{ $user->avatar ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset('storage/' . $user->avatar)) : asset('vendor/adminlte/dist/assets/img/avatar.png') }}"
                                                 alt="Usuario" class="rounded-circle border shadow-sm" width="55"
                                                 height="55" style="object-fit: cover;">
                                         </div>
@@ -65,7 +65,7 @@
                                         <!-- Logo Equipo -->
                                         <div class="text-center">
                                             <img id="teamLogoPreview"
-                                                src="{{ $user->team && $user->team->logo ? asset('storage/' . $user->team->logo) : asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png') }}"
+                                                src="{{ $user->team && $user->team->logo ? (str_starts_with($user->team->logo, 'http') ? $user->team->logo : asset('storage/' . $user->team->logo)) : asset('vendor/adminlte/dist/assets/img/AdminLTELogo.png') }}"
                                                 alt="Equipo" class="rounded-circle border shadow-sm" width="55"
                                                 height="55" style="object-fit: cover;">
                                         </div>

@@ -49,24 +49,28 @@ class ConfiguracionController extends Controller
         $data = $request->except('logo');
 
         // Manejo de la subida del Logotipo
+        // Manejo de la subida del Logotipo
         if ($request->hasFile('logo')) {
             // Si ya existía un logo previo, lo eliminamos de S3 de forma segura
             if ($configuracion->logo) {
-                // Extraemos la ruta relativa extrayendo todo después del nombre del bucket o parseando la URL
                 $parsedUrl = parse_url($configuracion->logo, PHP_URL_PATH);
-                // Ejemplo de path en S3: /storage/v1/object/public/proyectos/tapita/logos/...
                 $relativePath = preg_replace('/^\/storage\/v1\/object\/public\/[^\/]+\//', '', $parsedUrl);
 
                 if ($relativePath) {
-                    Storage::disk('s3')->delete($relativePath);
+                    /** @var \Illuminate\Filesystem\FilesystemAdapter $s3 */
+                    $s3 = Storage::disk('s3');
+                    $s3->delete($relativePath);
                 }
             }
 
-            // Guardamos el nuevo archivo directamente en el disco S3 dentro de tapita/logos
+            // Guardamos el nuevo archivo directamente en el disco S3
             $path = $request->file('logo')->store('tapita/logos', 's3');
 
-            // Guardamos la URL pública completa que nos otorga Supabase S3
-            $data['logo'] = Storage::disk('s3')->url($path);
+            /** @var \Illuminate\Filesystem\FilesystemAdapter $s3 */
+            $s3 = Storage::disk('s3');
+
+            // Guardamos la URL pública completa sin errores del linter
+            $data['logo'] = $s3->url($path);
         }
 
         // Actualizamos el registro

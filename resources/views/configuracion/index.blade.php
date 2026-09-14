@@ -3,9 +3,7 @@
 @section('title', $configGlobal->nombre ?? '@tech')
 
 {{-- Esto añade la imagen del logo como favicon de la pestaña --}}
-@section('adminlte_css_pre')
-    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
-@stop
+ink rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" t
 
 {{-- Activamos SweetAlert2 para las notificaciones Toast --}}
 @section('plugins.Sweetalert2', true)
@@ -143,9 +141,7 @@
                             <label class="form-label font-weight-bold small d-block">Previsualización</label>
                             <div class="p-1 border rounded bg-dark d-inline-block shadow-sm"
                                 style="min-height: 55px; min-width: 90px; display: flex; align-items: center; justify-content: center;">
-                                <img id="logoPreview"
-                                    src="{{ $configuracion->logo ? asset('storage/' . $configuracion->logo) : '#' }}"
-                                    alt="Logo del sistema"
+                                <img id="logoPreview" src="{{ $configuracion->logo ?? '#' }}" alt="Logo del sistema"
                                     class="img-fluid rounded {{ $configuracion->logo ? '' : 'd-none' }}"
                                     style="max-height: 50px; object-fit: contain;">
 

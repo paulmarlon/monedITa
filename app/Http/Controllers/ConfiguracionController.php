@@ -51,13 +51,13 @@ class ConfiguracionController extends Controller
 
         // Manejo de la subida del Logotipo
         if ($request->hasFile('logo')) {
-            // Si ya existía un logo previo, lo eliminamos del storage para no acumular basura
-            if ($configuracion->logo && Storage::disk('public')->exists($configuracion->logo)) {
-                Storage::disk('public')->delete($configuracion->logo);
+            // Si ya existía un logo previo en S3, lo eliminamos para no acumular basura
+            if ($configuracion->logo && Storage::disk('s3')->exists($configuracion->logo)) {
+                Storage::disk('s3')->delete($configuracion->logo);
             }
 
-            // Guardamos el nuevo archivo en storage/app/public/logos
-            $path = $request->file('logo')->store('logos', 'public');
+            // Guardamos el nuevo archivo en el bucket de Supabase dentro de tapita/logos
+            $path = $request->file('logo')->store('tapita/logos', 's3');
             $data['logo'] = $path;
         }
 

@@ -51,8 +51,9 @@ class TeamController extends Controller
 
         $data = $request->only(['nombre', 'ciclo_id']);
 
+
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('teams_logos', 'public');
+            $data['logo'] = $request->file('logo')->store('tapita/teams_logos', 's3');
         }
 
         Team::create($data);
@@ -83,11 +84,13 @@ class TeamController extends Controller
         $data = $request->only(['nombre', 'ciclo_id']);
 
         if ($request->hasFile('logo')) {
-            // Borrar el logotipo anterior si existe para no acumular basura en el storage
-            if ($team->logo && Storage::disk('public')->exists($team->logo)) {
-                Storage::disk('public')->delete($team->logo);
+            // Borrar el logotipo anterior en S3 si existe para no acumular basura
+            if ($team->logo && Storage::disk('s3')->exists($team->logo)) {
+                Storage::disk('s3')->delete($team->logo);
             }
-            $data['logo'] = $request->file('logo')->store('teams_logos', 'public');
+
+            // Guardar el nuevo logo en el bucket de Supabase dentro de tapita/teams_logos
+            $data['logo'] = $request->file('logo')->store('tapita/teams_logos', 's3');
         }
 
         $team->update($data);

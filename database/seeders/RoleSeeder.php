@@ -47,6 +47,9 @@ class RoleSeeder extends Seeder
             //'eliminar_puntajes',    // Para Admin/Supervisor
             //'ver_mis_puntajes',
             'ver_dino',
+            // --- NUEVO PERMISO DE AUDITORÍA ---
+            'ver_auditoria',        // Para ver e invalidar sesiones activas e IPs
+            'ver_historial_accesos',
         ];
 
         // Crear todos los permisos si no existen

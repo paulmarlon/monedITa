@@ -1,5 +1,10 @@
 @extends('adminlte::page')
-@section('title', 'Listado de Periodos')
+@section('title', $configGlobal->nombre ?? '@tech')
+
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+@stop
 {{-- Activamos los plugins configurados globalmente --}}
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesButtons', true)
@@ -54,19 +59,24 @@
                             </td>
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm shadow-sm" role="group">
-                                    <a href="{{ route('ciclos.edit', $ciclo) }}" class="btn btn-success btn-sm"
-                                        title="Editar ciclo">
-                                        <i class="bi bi-pencil-square text-white"></i> Editar
-                                    </a>
-                                    <form action="{{ route('ciclos.destroy', $ciclo) }}" method="POST" class="d-inline"
-                                        id="formEliminar{{ $ciclo->id }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn btn-danger btn-sm rounded-0 rounded-end"
-                                            title="Enviar a papelera" onclick="confirmarEliminacion({{ $ciclo->id }})">
-                                            <i class="bi bi-trash text-white"></i> Eliminar
-                                        </button>
-                                    </form>
+                                    @can('editar_ciclos')
+                                        <a href="{{ route('ciclos.edit', $ciclo) }}" class="btn btn-success btn-sm"
+                                            title="Editar ciclo">
+                                            <i class="bi bi-pencil-square text-white"></i> Editar
+                                        </a>
+
+                                        <form action="{{ route('ciclos.destroy', $ciclo) }}" method="POST" class="d-inline"
+                                            id="formEliminar{{ $ciclo->id }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-sm rounded-0 rounded-end"
+                                                title="Enviar a papelera" onclick="confirmarEliminacion({{ $ciclo->id }})">
+                                                <i class="bi bi-trash text-white"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-muted small fst-italic">Solo lectura</span>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

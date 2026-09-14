@@ -12,6 +12,9 @@ use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\JuegoController;
 use App\Http\Controllers\MinijuegoPuntajeController;
+use App\Http\Controllers\SessionAuditController;
+use App\Http\Controllers\AccessLogController;
+
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -21,10 +24,10 @@ Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-// Rutas protegidas globalmente para usuarios autenticados
-Route::middleware(['auth'])->group(function () {
+// Rutas protegidas globalmente para usuarios autenticados Y control de sesión única
+Route::middleware(['auth', 'auth.session'])->group(function () {
 
-    // Panel de Información / Estadísticas
+    // Panel de Información / Estadísticas (Única declaración limpia)
     Route::get('/informacion', DashboardController::class)->name('dashboard.info');
 
     // Rutas de Perfil
@@ -69,4 +72,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('minijuegos/{slug}/iniciar', [MinijuegoPuntajeController::class, 'iniciarPartida'])->name('minijuegos.iniciar')->middleware('auth');
     Route::post('minijuegos/guardar-puntaje', [MinijuegoPuntajeController::class, 'store'])->name('minijuegos.guardar')->middleware('auth');
+    // Auditoría de Sesiones Activas e IPs
+    Route::get('/admin/sesiones', [SessionAuditController::class, 'index'])->name('admin.sessions.index');
+    Route::delete('/admin/sesiones/{id}', [SessionAuditController::class, 'destroy'])->name('admin.sessions.destroy');
+    Route::get('/admin/historial-accesos', [AccessLogController::class, 'index'])
+        ->name('admin.historial.index')
+        ->middleware('can:ver_historial_accesos');
 });

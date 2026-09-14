@@ -1,6 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Catálogo de Minijuegos')
+@section('title', $configGlobal->nombre ?? '@tech')
+
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+@stop
 
 {{-- Activamos los plugins de DataTables y SweetAlert2 --}}
 @section('plugins.Datatables', true)
@@ -64,28 +69,39 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group btn-group-sm shadow-sm" role="group">
-                                                    <!-- Botón Ver -->
-                                                    <a href="{{ route('juegos.show', $juego) }}" class="btn btn-info btn-sm"
-                                                        title="Ver detalles">
-                                                        <i class="bi bi-eye text-white"></i>
-                                                    </a>
-                                                    <!-- Botón Editar -->
-                                                    <a href="{{ route('juegos.edit', $juego) }}"
-                                                        class="btn btn-success btn-sm" title="Editar">
-                                                        <i class="bi bi-pencil-square text-white"></i>
-                                                    </a>
-                                                    <!-- Botón Eliminar con SweetAlert -->
-                                                    <form action="{{ route('juegos.destroy', $juego) }}" method="POST"
-                                                        class="d-inline" id="formEliminar{{ $juego->id }}">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button"
-                                                            class="btn btn-danger btn-sm rounded-0 rounded-end"
-                                                            title="Eliminar"
-                                                            onclick="confirmarEliminacion({{ $juego->id }})">
-                                                            <i class="bi bi-trash text-white"></i>
-                                                        </button>
-                                                    </form>
+                                                    <!-- Botón Ver (Visible para cualquier usuario autenticado) -->
+                                                    @auth
+                                                        <a href="{{ route('juegos.show', $juego) }}" class="btn btn-info btn-sm"
+                                                            title="Ver detalles">
+                                                            <i class="bi bi-eye text-white"></i>
+                                                        </a>
+                                                    @endauth
+
+                                                    <!-- Botones de Gestión (Visible solo si el usuario tiene permiso de editar/eliminar) -->
+                                                    @can('editar_juegos')
+                                                        {{-- O el nombre del permiso/rol que uses en tu sistema --}}
+                                                        <!-- Botón Editar -->
+                                                        <a href="{{ route('juegos.edit', $juego) }}"
+                                                            class="btn btn-success btn-sm" title="Editar">
+                                                            <i class="bi bi-pencil-square text-white"></i>
+                                                        </a>
+                                                    @endcan
+
+                                                    @can('eliminar_juegos')
+                                                        {{-- O el permiso correspondiente --}}
+                                                        <!-- Botón Eliminar con SweetAlert -->
+                                                        <form action="{{ route('juegos.destroy', $juego) }}" method="POST"
+                                                            class="d-inline" id="formEliminar{{ $juego->id }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="button"
+                                                                class="btn btn-danger btn-sm rounded-0 rounded-end"
+                                                                title="Eliminar"
+                                                                onclick="confirmarEliminacion({{ $juego->id }})">
+                                                                <i class="bi bi-trash text-white"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>

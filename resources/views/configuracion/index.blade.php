@@ -1,6 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Configuración del Sistema')
+@section('title', $configGlobal->nombre ?? '@tech')
+
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+@stop
 
 {{-- Activamos SweetAlert2 para las notificaciones Toast --}}
 @section('plugins.Sweetalert2', true)
@@ -13,10 +18,9 @@
 
 @section('content')
     <div class="container-fluid">
-
-        <div class="card card-primary card-outline shadow">
-            <div class="card-header">
-                <h3 class="card-title">
+        <div class="card card-primary card-outline shadow-sm">
+            <div class="card-header py-2">
+                <h3 class="card-title m-0">
                     <i class="bi bi-gear-fill me-1"></i> Personalizar Parámetros del Sistema
                 </h3>
             </div>
@@ -26,14 +30,14 @@
                 @csrf
                 @method('PUT')
 
-                <div class="card-body">
+                <div class="card-body pb-2">
 
                     <div class="row">
                         {{-- Nombre --}}
-                        <div class="col-md-6 mb-3">
-                            <label for="nombre" class="form-label font-weight-bold">Nombre del Sistema / Institución <span
-                                    class="text-danger">*</span></label>
-                            <div class="input-group">
+                        <div class="col-md-6 mb-2">
+                            <label for="nombre" class="form-label font-weight-bold small">Nombre del Sistema / Institución
+                                <span class="text-danger">*</span></label>
+                            <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-success"><i class="bi bi-building"></i></span>
                                 <input type="text" class="form-control @error('nombre') is-invalid @enderror"
                                     id="nombre" name="nombre" value="{{ old('nombre', $configuracion->nombre) }}"
@@ -45,9 +49,9 @@
                         </div>
 
                         {{-- Correo --}}
-                        <div class="col-md-6 mb-3">
-                            <label for="correo" class="form-label font-weight-bold">Correo Electrónico</label>
-                            <div class="input-group">
+                        <div class="col-md-6 mb-2">
+                            <label for="correo" class="form-label font-weight-bold small">Correo Electrónico</label>
+                            <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-success"><i class="bi bi-envelope"></i></span>
                                 <input type="email" class="form-control @error('correo') is-invalid @enderror"
                                     id="correo" name="correo" value="{{ old('correo', $configuracion->correo) }}"
@@ -61,9 +65,9 @@
 
                     <div class="row">
                         {{-- Teléfono --}}
-                        <div class="col-md-6 mb-3">
-                            <label for="telefono" class="form-label font-weight-bold">Teléfono / Celular</label>
-                            <div class="input-group">
+                        <div class="col-md-6 mb-2">
+                            <label for="telefono" class="form-label font-weight-bold small">Teléfono / Celular</label>
+                            <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-success"><i class="bi bi-telephone"></i></span>
                                 <input type="text" class="form-control @error('telefono') is-invalid @enderror"
                                     id="telefono" name="telefono" value="{{ old('telefono', $configuracion->telefono) }}"
@@ -75,9 +79,9 @@
                         </div>
 
                         {{-- Sitio Web --}}
-                        <div class="col-md-6 mb-3">
-                            <label for="web" class="form-label font-weight-bold">Sitio Web Oficial</label>
-                            <div class="input-group">
+                        <div class="col-md-6 mb-2">
+                            <label for="web" class="form-label font-weight-bold small">Sitio Web Oficial</label>
+                            <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-success"><i class="bi bi-globe"></i></span>
                                 <input type="url" class="form-control @error('web') is-invalid @enderror" id="web"
                                     name="web" value="{{ old('web', $configuracion->web) }}"
@@ -91,9 +95,9 @@
 
                     <div class="row">
                         {{-- Dirección --}}
-                        <div class="col-md-12 mb-3">
-                            <label for="direccion" class="form-label font-weight-bold">Dirección Física</label>
-                            <div class="input-group">
+                        <div class="col-md-12 mb-2">
+                            <label for="direccion" class="form-label font-weight-bold small">Dirección Física</label>
+                            <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-success"><i class="bi bi-geo-alt"></i></span>
                                 <input type="text" class="form-control @error('direccion') is-invalid @enderror"
                                     id="direccion" name="direccion"
@@ -108,45 +112,46 @@
 
                     <div class="row">
                         {{-- Descripción --}}
-                        <div class="col-md-12 mb-3">
-                            <label for="descripcion" class="form-label font-weight-bold">Descripción / Misión
+                        <div class="col-md-12 mb-2">
+                            <label for="descripcion" class="form-label font-weight-bold small">Descripción / Misión
                                 General</label>
-                            <textarea class="form-control @error('descripcion') is-invalid @enderror" id="descripcion" name="descripcion"
-                                rows="3" placeholder="Breve reseña o detalles del sistema">{{ old('descripcion', $configuracion->descripcion) }}</textarea>
+                            <textarea class="form-control form-control-sm @error('descripcion') is-invalid @enderror" id="descripcion"
+                                name="descripcion" rows="2" placeholder="Breve reseña o detalles del sistema">{{ old('descripcion', $configuracion->descripcion) }}</textarea>
                             @error('descripcion')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
-                    <hr class="my-4">
+                    <hr class="my-2">
 
                     <div class="row align-items-center">
                         {{-- Input para cargar el Logo --}}
-                        <div class="col-md-7 mb-3">
-                            <label for="logo" class="form-label font-weight-bold">Logotipo del Sistema</label>
-                            <input type="file" class="form-control @error('logo') is-invalid @enderror" id="logo"
-                                name="logo" accept="image/*">
-                            <small class="text-muted d-block mt-1">Formatos recomendados: PNG, JPG, SVG. Máximo 2MB.</small>
+                        <div class="col-md-8 mb-2">
+                            <label for="logo" class="form-label font-weight-bold small">Logotipo del Sistema</label>
+                            <input type="file" class="form-control form-control-sm @error('logo') is-invalid @enderror"
+                                id="logo" name="logo" accept="image/*">
+                            <small class="text-muted d-block mt-1" style="font-size: 0.75rem;">Formatos recomendados: PNG,
+                                JPG, SVG. Máximo 2MB.</small>
                             @error('logo')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
                         {{-- Contenedor de Previsualización en vivo --}}
-                        <div class="col-md-5 text-center mb-3">
-                            <label class="form-label font-weight-bold d-block">Previsualización del Logo</label>
-                            <div class="p-2 border rounded bg-dark d-inline-block shadow-sm"
-                                style="min-height: 100px; min-width: 120px; display: flex; align-items: center; justify-content: center;">
+                        <div class="col-md-4 text-center mb-2">
+                            <label class="form-label font-weight-bold small d-block">Previsualización</label>
+                            <div class="p-1 border rounded bg-dark d-inline-block shadow-sm"
+                                style="min-height: 55px; min-width: 90px; display: flex; align-items: center; justify-content: center;">
                                 <img id="logoPreview"
                                     src="{{ $configuracion->logo ? asset('storage/' . $configuracion->logo) : '#' }}"
                                     alt="Logo del sistema"
                                     class="img-fluid rounded {{ $configuracion->logo ? '' : 'd-none' }}"
-                                    style="max-height: 90px; object-fit: contain;">
+                                    style="max-height: 50px; object-fit: contain;">
 
-                                <span id="noLogoText"
-                                    class="text-muted small {{ $configuracion->logo ? 'd-none' : '' }}">
-                                    <i class="bi bi-image fs-4 d-block mb-1"></i> Sin imagen seleccionada
+                                <span id="noLogoText" class="text-muted small {{ $configuracion->logo ? 'd-none' : '' }}"
+                                    style="font-size: 0.7rem;">
+                                    <i class="bi bi-image d-block"></i> Sin imagen
                                 </span>
                             </div>
                         </div>
@@ -154,8 +159,8 @@
 
                 </div>
 
-                <div class="card-footer text-end">
-                    <button type="submit" class="btn btn-success shadow-sm px-4">
+                <div class="card-footer text-end py-2">
+                    <button type="submit" class="btn btn-success btn-sm shadow-sm px-4">
                         <i class="bi bi-save2 me-1"></i> Guardar Cambios
                     </button>
                 </div>
@@ -167,7 +172,6 @@
 
 @section('js')
     <script>
-        // Script para previsualizar la imagen antes de subirla
         document.getElementById('logo').addEventListener('change', function(event) {
             const [file] = event.target.files;
             const preview = document.getElementById('logoPreview');
@@ -180,7 +184,6 @@
             }
         });
 
-        // Alerta Toast de SweetAlert2 al guardar con éxito
         @if (session('mensaje'))
             Swal.fire({
                 position: 'top-end',

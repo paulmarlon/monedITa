@@ -14,15 +14,7 @@
 
 @section('content_header')
     <div class="d-flex justify-content-between align-items-center">
-        <h1>Gestión de <b>Equipos</b></h1>
-        <div>
-            <a href="{{ route('teams.trash') }}" class="btn btn-outline-secondary me-2 btn-sm shadow-sm">
-                <i class="bi bi-trash3 me-1"></i> Papelera
-            </a>
-            <a href="{{ route('teams.create') }}" class="btn btn-primary btn-sm shadow-sm">
-                <i class="bi bi-plus-lg me-1"></i> Crear Equipo
-            </a>
-        </div>
+        <h1>Auditoría de <b>Sesiones y Accesos Activos</b></h1>
     </div>
 @stop
 
@@ -30,57 +22,57 @@
     <div class="card card-primary card-outline shadow">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="bi bi-people me-1"></i> Listado General de Equipos Activos
+                <i class="fas fa-shield-alt me-1"></i> Control de IPs y Dispositivos Conectados
             </h3>
         </div>
         <div class="card-body">
-            <table id="teamsTable" class="table table-bordered table-striped table-hover table-sm w-100 align-middle">
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
+
+            <table id="sessionsTable" class="table table-bordered table-striped table-hover table-sm w-100 align-middle">
                 <thead class="table-dark">
                     <tr>
-                        <th class="py-2" style="width: 50px;">#</th>
-                        <th class="py-2" style="width: 70px;" class="text-center">Logo</th>
-                        <th class="py-2">Nombre del Equipo</th>
-                        <th class="py-2">Ciclo / Periodo</th>
+                        <th class="py-2">#</th>
+                        <th class="py-2">Usuario</th>
+                        <th class="py-2">Dirección IP</th>
+                        <th class="py-2">Navegador / Dispositivo (User Agent)</th>
+                        <th class="py-2">Última Actividad</th>
                         <th style="width: 120px" class="text-center py-2">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($teams as $index => $team)
+                    @foreach ($sesiones as $index => $sesion)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td class="text-center">
-                                @if ($team->logo)
-                                    <img src="{{ asset('storage/' . $team->logo) }}" alt="Logo"
-                                        class="rounded-circle shadow-sm"
-                                        style="width: 35px; height: 35px; object-fit: cover;">
-                                @else
-                                    <span class="badge bg-secondary">Sin logo</span>
-                                @endif
-                            </td>
-                            <td class="fw-semibold">{{ $team->nombre }}</td>
                             <td>
-                                <span class="badge bg-info text-dark">{{ $team->ciclo->nombre ?? 'Sin Ciclo' }}</span>
+                                <strong>{{ $sesion->user_name ?? 'Invitado / No autenticado' }}</strong><br>
+                                <small class="text-muted">{{ $sesion->user_email }}</small>
+                            </td>
+                            <td><code>{{ $sesion->ip_address }}</code></td>
+                            <td>
+                                <small class="text-break" style="max-width: 300px; display: inline-block;">
+                                    {{ $sesion->user_agent }}
+                                </small>
+                            </td>
+                            <td>{{ \Carbon\Carbon::createFromTimestamp($sesion->last_activity)->diffForHumans() }}</td>
                             <td class="text-center">
-                                <div class="btn-group btn-group-sm shadow-sm" role="group">
-                                    @can('editar_teams')
-                                        {{-- Usamos el permiso exacto de tu Seeder --}}
-                                        <a href="{{ route('teams.edit', $team) }}" class="btn btn-success btn-sm"
-                                            title="Editar equipo">
-                                            <i class="bi bi-pencil-square text-white"></i> Editar
-                                        </a>
-                                        <form action="{{ route('teams.destroy', $team) }}" method="POST" class="d-inline"
-                                            id="formEliminar{{ $team->id }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" class="btn btn-danger btn-sm rounded-0 rounded-end"
-                                                title="Enviar a papelera" onclick="confirmarEliminacion({{ $team->id }})">
-                                                <i class="bi bi-trash text-white"></i> Eliminar
-                                            </button>
-                                        </form>
-                                    @else
-                                        <span class="text-muted small fst-italic">Solo lectura</span>
-                                    @endcan
-                                </div>
+                                @if ($sesion->session_id !== request()->session()->getId())
+                                    <form action="{{ route('admin.sessions.destroy', $sesion->session_id) }}" method="POST"
+                                        class="d-inline" id="formExpulsar{{ $index }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn btn-danger btn-sm" title="Expulsar usuario"
+                                            onclick="confirmarExpulsion({{ $index }})">
+                                            <i class="fas fa-sign-out-alt text-white"></i> Expulsar
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="badge bg-success">Tu sesión actual</span>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -93,13 +85,13 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            if ($('#teamsTable').length) {
-                $('#teamsTable').DataTable({
+            if ($('#sessionsTable').length) {
+                $('#sessionsTable').DataTable({
                     responsive: true,
                     autoWidth: false,
                     language: {
                         "decimal": "",
-                        "emptyTable": "No hay datos disponibles en la tabla",
+                        "emptyTable": "No hay sesiones activas registradas en la base de datos",
                         "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
                         "infoEmpty": "Mostrando 0 to 0 of 0 registros",
                         "infoFiltered": "(filtrado de _MAX_ registros totales)",
@@ -147,11 +139,11 @@
                 });
             }
 
-            @if (session('success') || session('mensaje'))
+            @if (session('mensaje'))
                 Swal.fire({
                     position: 'top-end',
-                    icon: 'success',
-                    title: '{{ session('success') ?? session('mensaje') }}',
+                    icon: '{{ session('icon', 'success') }}',
+                    title: '{{ session('mensaje') }}',
                     showConfirmButton: false,
                     timer: 3000,
                     timerProgressBar: true,
@@ -162,21 +154,21 @@
             @endif
         });
 
-        function confirmarEliminacion(id) {
+        function confirmarExpulsion(index) {
             Swal.fire({
-                title: '¿Enviar a papelera?',
-                text: "El equipo será movido a la papelera.",
+                title: '¿Expulsar usuario?',
+                text: "Se cerrará la sesión de este usuario de forma inmediata.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#dc3545',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, enviar',
+                confirmButtonText: 'Sí, expulsar',
                 cancelButtonText: 'Cancelar',
                 background: '#343a40',
                 color: '#ffffff'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    document.getElementById('formEliminar' + id).submit();
+                    document.getElementById('formExpulsar' + index).submit();
                 }
             });
         }

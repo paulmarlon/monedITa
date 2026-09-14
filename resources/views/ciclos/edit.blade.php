@@ -1,6 +1,10 @@
 @extends('adminlte::page')
+@section('title', $configGlobal->nombre ?? '@tech')
 
-@section('title', 'Editar Periodo')
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+@stop
 
 @section('content_header')
     <div class="d-flex justify-content-between align-items-center">

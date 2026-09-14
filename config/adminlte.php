@@ -77,7 +77,7 @@ return [
     |
     */
 
-    'logo' => '<b>moned</b>ITa',
+    'logo' => 'tap<b>IT</b>a',
     'logo_img' => 'vendor/adminlte/dist/assets/img/AdminLTELogo.png',
     'logo_img_class' => 'brand-image opacity-75 shadow',
     'logo_img_xl' => null,
@@ -771,78 +771,16 @@ return [
     | https://jeroennoten.github.io/Laravel-AdminLTE/sections/configuration/menu.html
     |
     */
-
     'menu' => [
-        // Navbar items:
+        // -------------------------------------------------------------
+        // NAVBAR ITEMS (Elementos superiores)
+        // -------------------------------------------------------------
         [
             'text' => 'Perfil',
             'route' => 'profile.edit',
             'icon' => 'bi bi-person-badge me-1',
-            'classes' => 'btn-efecto-elevar text-body bg-transparent', // Cambiado text-primary por text-body y agregado bg-transparent
+            'classes' => 'btn-efecto-elevar text-body bg-transparent',
             'topnav_user' => true,
-        ],
-        [
-            'text' => 'Configuración',
-            'route' => 'configuracion.index',
-            'icon' => 'bi bi-gear-fill me-1',
-            'classes' => 'btn-efecto-elevar text-warning',
-            'can' => 'ver_configuracion', // Oculto si no tiene el permiso
-        ],
-
-        [
-            'text' => 'Periodo',
-            'route' => 'ciclos.index',
-            'icon' => 'bi bi-calendar-event me-1',
-            'classes' => 'btn-efecto-elevar text-info',
-            'can' => 'ver_ciclos', // Oculto si no tiene el permiso
-        ],
-        [
-            'text' => 'Equipos',
-            'route' => 'teams.index',
-            'icon' => 'bi bi-people me-1',
-            'classes' => 'btn-efecto-elevar text-info',
-            'can' => 'ver_teams', // Oculto si no tiene el permiso
-        ],
-        [
-            'text' => 'Monedero',
-            'route' => 'wallets.index',
-            'icon' => 'bi bi-wallet2 me-1',
-            'classes' => 'btn-efecto-elevar text-success',
-            'can' => 'ver_wallet', // Oculto si no tiene el permiso
-        ],
-        [
-            'text' => 'Gestión de Roles',
-            'route' => 'roles.index',
-            'icon' => 'bi bi-shield-lock me-1',
-            'classes' => 'btn-efecto-elevar text-info',
-            'can' => 'ver_roles', // Solo visible si el rol tiene el permiso ver_roles
-        ],
-        [
-            'text' => 'Minijuegos',
-            'route' => 'juegos.index',
-            'icon' => 'bi bi-controller me-1',
-            'classes' => 'btn-efecto-elevar text-success',
-            'can' => 'ver_juegos', // Oculto si no tiene el permiso
-        ],
-        [
-            'text' => 'Dino Runner 🦖',
-            'route' => 'juegos.dino', // O la ruta que estés usando para el juego
-            'icon' => 'bi bi-lightning-charge me-1',
-            'classes' => 'btn-efecto-elevar text-warning',
-            'can' => 'ver_dino', // <--- Condicionado al permiso del estudiante
-        ],
-        [
-            'text' => 'Historial de Puntajes',
-            'route' => 'minijuegos-puntajes.index',
-            'icon' => 'bi bi-trophy me-1',
-            'classes' => 'btn-efecto-elevar text-warning',
-            'can' => 'ver_puntajes', // Solo visible si tiene permisos
-        ],
-
-        [
-            'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
         ],
         [
             'type' => 'darkmode-widget',
@@ -853,21 +791,106 @@ return [
             'topnav_right' => true,
         ],
 
-        // Sidebar items:
+        // -------------------------------------------------------------
+        // SIDEBAR ITEMS (Menú lateral estructurado por secciones)
+        // -------------------------------------------------------------
         [
             'type' => 'sidebar-menu-search',
             'text' => 'search',
         ],
+
+        // --- PRINCIPAL ---
         [
             'text' => 'Panel de Información',
             'route' => 'dashboard.info',
-            'icon' => 'bi bi-bar-chart-fill me-1', // Ícono representativo de estadísticas
+            'icon' => 'bi bi-bar-chart-fill me-1',
             'classes' => 'btn-efecto-elevar text-primary',
-            // Como acordamos que no lleva restricción de permiso estricta
-            // para los usuarios logueados, puedes omitir la clave 'can' o dejarla libre.
         ],
 
-        // Puedes agregar más elementos del menú aquí y protegerlos igual con 'can' => '...'
+        // --- OPERACIÓN Y GESTIÓN ---
+        [
+            'header' => 'GESTIÓN OPERATIVA',
+        ],
+        [
+            'text' => 'Periodos',
+            'route' => 'ciclos.index',
+            'icon' => 'bi bi-calendar-event me-1',
+            'classes' => 'btn-efecto-elevar text-info',
+            'can' => 'ver_ciclos',
+        ],
+        [
+            'text' => 'Equipos',
+            'route' => 'teams.index',
+            'icon' => 'bi bi-people me-1',
+            'classes' => 'btn-efecto-elevar text-info',
+            'can' => 'ver_teams',
+        ],
+        [
+            'text' => 'Monedero',
+            'route' => 'wallets.index',
+            'icon' => 'bi bi-wallet2 me-1',
+            'classes' => 'btn-efecto-elevar text-success',
+            'can' => 'ver_wallet',
+        ],
+
+        // --- ENTRETENIMIENTO / MINIJUEGOS ---
+        [
+            'header' => 'ZONA DE JUEGOS',
+        ],
+        [
+            'text' => 'Minijuegos',
+            'route' => 'juegos.index',
+            'icon' => 'bi bi-controller me-1',
+            'classes' => 'btn-efecto-elevar text-success',
+            'can' => 'ver_juegos',
+        ],
+        [
+            'text' => 'Dino Runner 🦖',
+            'route' => 'juegos.dino',
+            'icon' => 'bi bi-lightning-charge me-1',
+            'classes' => 'btn-efecto-elevar text-warning',
+            'can' => 'ver_dino',
+        ],
+        [
+            'text' => 'Historial de Puntajes',
+            'route' => 'minijuegos-puntajes.index',
+            'icon' => 'bi bi-trophy me-1',
+            'classes' => 'btn-efecto-elevar text-warning',
+            'can' => 'ver_puntajes',
+        ],
+
+        // --- ADMINISTRACIÓN Y SEGURIDAD ---
+        [
+            'header' => 'ADMINISTRACIÓN Y SEGURIDAD',
+        ],
+        [
+            'text' => 'Gestión de Roles',
+            'route' => 'roles.index',
+            'icon' => 'bi bi-shield-lock me-1',
+            'classes' => 'btn-efecto-elevar text-info',
+            'can' => 'ver_roles',
+        ],
+        [
+            'text' => 'Configuración',
+            'route' => 'configuracion.index',
+            'icon' => 'bi bi-gear-fill me-1',
+            'classes' => 'btn-efecto-elevar text-warning',
+            'can' => 'ver_configuracion',
+        ],
+        [
+            'text' => 'Sesiones Activas',
+            'route' => 'admin.sessions.index',
+            'icon' => 'bi bi-shield-exclamation me-1',
+            'classes' => 'btn-efecto-elevar text-warning',
+            'can' => 'ver_auditoria',
+        ],
+        [
+            'text' => 'Historial de Accesos',
+            'route' => 'admin.historial.index',
+            'icon' => 'bi bi-clock-history me-1',
+            'classes' => 'btn-efecto-elevar text-info',
+            'can' => 'ver_historial_accesos',
+        ],
     ],
 
     /*

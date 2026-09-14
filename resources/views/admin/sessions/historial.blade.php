@@ -6,57 +6,49 @@
 @section('adminlte_css_pre')
     <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
 @stop
-{{-- Activamos los plugins configurados globalmente --}}
+
 @section('plugins.Datatables', true)
 @section('plugins.DatatablesButtons', true)
-@section('plugins.Sweetalert2', true)
 
 @section('content_header')
     <div class="d-flex justify-content-between align-items-center">
-        <h1>Papelera de <b>Periodos</b></h1>
-        <div>
-            <a href="{{ route('ciclos.index') }}" class="btn btn-secondary btn-sm shadow-sm">
-                <i class="bi bi-arrow-left me-1"></i> Volver al Listado
-            </a>
-        </div>
+        <h1>Historial de <b>Accesos y Auditoría</b></h1>
     </div>
 @stop
 
 @section('content')
-    <div class="card card-secondary card-outline shadow">
+    <div class="card card-primary card-outline shadow">
         <div class="card-header">
             <h3 class="card-title">
-                <i class="bi bi-trash3 me-1"></i> Registros en Papelera (Disponibles para Restaurar)
+                <i class="fas fa-history me-1"></i> Registro Permanente de Entradas al Sistema
             </h3>
         </div>
         <div class="card-body">
-            <table id="trashTable" class="table table-bordered table-striped table-hover table-sm w-100 align-middle">
+            <table id="historialTable" class="table table-bordered table-striped table-hover table-sm w-100 align-middle">
                 <thead class="table-dark">
                     <tr>
                         <th class="py-2">#</th>
-                        <th class="py-2">Nombre</th>
-                        <th class="py-2">Fecha de Eliminación</th>
-                        <th style="width: 130px" class="text-center py-2">Acciones</th>
+                        <th class="py-2">Usuario</th>
+                        <th class="py-2">Dirección IP</th>
+                        <th class="py-2">Navegador / Dispositivo</th>
+                        <th class="py-2">Fecha y Hora de Acceso</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($ciclos as $index => $ciclo)
+                    @foreach ($historial as $index => $log)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td class="fw-semibold text-muted">{{ $ciclo->nombre }}</td>
-                            <td>{{ $ciclo->deleted_at ? \Carbon\Carbon::parse($ciclo->deleted_at)->format('d/m/Y H:i') : '-' }}
+                            <td>
+                                <strong>{{ $log->user_name ?? 'Usuario desconocido' }}</strong><br>
+                                <small class="text-muted">{{ $log->user_email }}</small>
                             </td>
-                            <td class="text-center">
-                                <form action="{{ route('ciclos.restore', $ciclo->id) }}" method="POST" class="d-inline"
-                                    id="formRestaurar{{ $ciclo->id }}">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="button" class="btn btn-success btn-sm shadow-sm"
-                                        title="Restaurar periodo" onclick="confirmarRestauracion({{ $ciclo->id }})">
-                                        <i class="bi bi-arrow-counterclockwise text-white"></i> Restaurar
-                                    </button>
-                                </form>
+                            <td><code>{{ $log->ip_address }}</code></td>
+                            <td>
+                                <small class="text-break" style="max-width: 300px; display: inline-block;">
+                                    {{ $log->user_agent }}
+                                </small>
                             </td>
+                            <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d/m/Y H:i:s') }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -68,13 +60,13 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            if ($('#trashTable').length) {
-                $('#trashTable').DataTable({
+            if ($('#historialTable').length) {
+                $('#historialTable').DataTable({
                     responsive: true,
                     autoWidth: false,
                     language: {
                         "decimal": "",
-                        "emptyTable": "La papelera está vacía",
+                        "emptyTable": "No hay registros en el historial",
                         "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
                         "infoEmpty": "Mostrando 0 to 0 of 0 registros",
                         "infoFiltered": "(filtrado de _MAX_ registros totales)",
@@ -121,38 +113,6 @@
                     ]
                 });
             }
-            @if (session('mensaje'))
-                Swal.fire({
-                    position: 'top-end',
-                    icon: '{{ session('icon', 'success') }}',
-                    title: '{{ session('mensaje') }}',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true,
-                    toast: true,
-                    background: '#343a40',
-                    color: '#ffffff'
-                });
-            @endif
         });
-
-        function confirmarRestauracion(id) {
-            Swal.fire({
-                title: '¿Restaurar periodo?',
-                text: "El registro volverá a estar activo en el sistema.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#28a745',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, restaurar',
-                cancelButtonText: 'Cancelar',
-                background: '#343a40',
-                color: '#ffffff'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    document.getElementById('formRestaurar' + id).submit();
-                }
-            });
-        }
     </script>
 @stop

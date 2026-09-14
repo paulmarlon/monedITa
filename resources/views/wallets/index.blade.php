@@ -1,6 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'moned-IT-a')
+@section('title', $configGlobal->nombre ?? '@tech')
+
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+@stop
 @section('plugins.SelectBs', true)
 @section('plugins.Sweetalert2', true)
 
@@ -22,7 +27,8 @@
                             <div class="inner p-2 text-dark">
                                 <h4 class="mb-0 font-weight-bold">{{ number_format($causaComun->total_acumulado ?? 0, 2) }}
                                 </h4>
-                                <p class="mb-0" style="font-size: 0.8rem;"><i class="bi bi-recycle text-success"></i> Fondo
+                                <p class="mb-0" style="font-size: 0.8rem;"><i class="bi bi-recycle text-success"></i>
+                                    Fondo
                                     Eco</p>
                             </div>
                         </div>
@@ -83,12 +89,14 @@
                                         class="form-control form-control-sm" placeholder="0.00" readonly required>
                                 </div>
                             </div>
-                            <div class="card-footer py-2">
-                                <button type="button" onclick="confirmarTransaccion('acreditar')"
-                                    class="btn btn-success btn-sm w-100">
-                                    <i class="bi bi-check-circle"></i> Acreditar Saldo
-                                </button>
-                            </div>
+                            @can('acreditar_wallet')
+                                <div class="card-footer py-2">
+                                    <button type="button" onclick="confirmarTransaccion('acreditar')"
+                                        class="btn btn-success btn-sm w-100">
+                                        <i class="bi bi-check-circle"></i> Acreditar Saldo
+                                    </button>
+                                </div>
+                            @endcan
                         </form>
                     </div>
                 @endcan

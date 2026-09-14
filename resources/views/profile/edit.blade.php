@@ -1,6 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Mi Perfil e Identidad')
+@section('title', $configGlobal->nombre ?? '@tech')
+
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+@stop
 
 @section('plugins.Sweetalert2', true)
 
@@ -127,7 +132,7 @@
                             <!-- Fila 3: Selección de Equipo y Carga de Avatar (Abajo del Banner) -->
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="team_id" class="form-label small fw-bold">Selección de Clan / Equipo
+                                    <label for="team_id" class="form-label small fw-bold">Selección de Equipo
                                         Eco-Salesiano</label>
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text"><i class="bi bi-people"></i></span>

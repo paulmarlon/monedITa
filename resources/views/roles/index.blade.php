@@ -1,6 +1,11 @@
 @extends('adminlte::page')
 
-@section('title', 'Lista de Roles')
+@section('title', $configGlobal->nombre ?? '@tech')
+
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+@stop
 
 {{-- Activamos los plugins configurados globalmente --}}
 @section('plugins.Datatables', true)

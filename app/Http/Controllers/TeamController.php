@@ -55,8 +55,11 @@ class TeamController extends Controller
             // Guardamos el archivo en S3
             $path = $request->file('logo')->store('tapita/teams_logos', 's3');
 
-            // Guardamos la URL pública COMPLETA en la base de datos
-            $data['logo'] = Storage::url($path);
+            // Construimos explícitamente la URL pública web de Supabase (/object/public/)
+            $baseUrl = rtrim(env('AWS_ENDPOINT'), '/s3');
+            $bucket = env('AWS_BUCKET');
+
+            $data['logo'] = "{$baseUrl}/object/public/{$bucket}/{$path}";
         }
 
         Team::create($data);
@@ -87,19 +90,14 @@ class TeamController extends Controller
         $data = $request->only(['nombre', 'ciclo_id']);
 
         if ($request->hasFile('logo')) {
-            // Si ya existía un logo previo y es una URL completa de S3, extraemos la ruta para eliminarlo
-            if ($team->logo) {
-                $oldPath = str_replace(Storage::url(''), '', $team->logo);
-                if (Storage::exists($oldPath)) {
-                    Storage::delete($oldPath);
-                }
-            }
-
-            // Guardar el nuevo logo en el bucket de Supabase dentro de tapita/teams_logos
+            // Guardamos el archivo en S3
             $path = $request->file('logo')->store('tapita/teams_logos', 's3');
 
-            // Guardamos la URL pública COMPLETA en la base de datos
-            $data['logo'] = Storage::url($path);
+            // Construimos explícitamente la URL pública web de Supabase (/object/public/)
+            $baseUrl = rtrim(env('AWS_ENDPOINT'), '/s3');
+            $bucket = env('AWS_BUCKET');
+
+            $data['logo'] = "{$baseUrl}/object/public/{$bucket}/{$path}";
         }
 
         $team->update($data);

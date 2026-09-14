@@ -50,8 +50,7 @@
                             <td>{{ $index + 1 }}</td>
                             <td class="text-center">
                                 @if ($team->logo)
-                                    <img src="{{ asset('storage/' . $team->logo) }}" alt="Logo"
-                                        class="rounded-circle shadow-sm"
+                                    <img src="{{ $team->logo }}" alt="Logo" class="rounded-circle shadow-sm"
                                         style="width: 35px; height: 35px; object-fit: cover;">
                                 @else
                                     <span class="badge bg-secondary">Sin logo</span>

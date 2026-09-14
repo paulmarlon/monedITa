@@ -50,9 +50,14 @@
             $config = \App\Models\Configuracion::first();
             $logoPath = $config->logo ?? null;
 
-            $imgSrc = $logoPath
-                ? asset('storage/' . $logoPath)
-                : asset(config('adminlte.preloader.img.path', 'vendor/adminlte/dist/assets/img/AdminLTELogo.png'));
+            if ($logoPath) {
+                $imgSrc = str_starts_with($logoPath, 'http') ? $logoPath : asset('storage/' . $logoPath);
+            } else {
+                $imgSrc = asset(
+                    config('adminlte.preloader.img.path', 'vendor/adminlte/dist/assets/img/AdminLTELogo.png'),
+                );
+            }
+
             $imgAlt = $logoPath ? 'Logo del Sistema' : config('adminlte.preloader.img.alt', 'AdminLTE Preloader Image');
         @endphp
 

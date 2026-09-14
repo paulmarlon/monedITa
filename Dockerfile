@@ -22,7 +22,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Instalar dependencias de PHP para producción
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --verbose
 
 # Ajustar permisos de las carpetas de almacenamiento y caché de Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache

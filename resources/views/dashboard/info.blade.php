@@ -8,16 +8,17 @@
 @stop
 
 @section('content_header')
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
         <div>
-            <h1 class="h4 fw-bold mb-0">Panel de Estadísticas</h1>
+            <h1 class="h4 font-weight-bold mb-0">Panel de Estadísticas</h1>
             <p class="text-muted small mb-0">Resumen general del periodo en curso</p>
         </div>
         @if (isset($cicloActivo))
             <div
-                class="bg-dark text-white px-2.5 py-1.5 rounded-2 small fw-medium d-flex align-items-center gap-2 shadow-sm">
-                <span class="spinner-grow spinner-grow-sm bg-success rounded-circle" style="width: 8px; height: 8px;"></span>
-                Ciclo Activo: <span class="fw-bold">{{ $cicloActivo->nombre }}</span>
+                class="bg-dark text-white px-2 py-1 rounded small font-weight-medium d-flex align-items-center shadow-sm mt-2 mt-md-0">
+                <span class="spinner-grow spinner-grow-sm bg-success rounded-circle me-2"
+                    style="width: 8px; height: 8px;"></span>
+                Ciclo Activo: <span class="font-weight-bold ms-1">{{ $cicloActivo->nombre }}</span>
             </div>
         @endif
     </div>
@@ -45,15 +46,18 @@
                 </div>
 
                 <!-- Panel Lateral con Small Boxes de Estadísticas del Sistema -->
-                <div class="col-12 col-lg-6 d-flex flex-column justify-content-between gap-2">
-                    <x-adminlte-small-box title="{{ count($equiposRanking) }}" text="Equipos Registrados"
-                        icon="bi bi-trophy" theme="warning" url="#" url-text="Ver todos los equipos"
-                        class="shadow-sm mb-0 compact-small-box">
-                    </x-adminlte-small-box>
-
-                    <x-adminlte-small-box title="Top 5" text="Minijuegos Activos" icon="bi bi-controller" theme="info"
-                        url="#" url-text="Ver puntajes" class="shadow-sm mb-0 compact-small-box">
-                    </x-adminlte-small-box>
+                <div class="col-12 col-lg-6 d-flex flex-column justify-content-between">
+                    <div class="mb-2">
+                        <x-adminlte-small-box title="{{ count($equiposRanking) }}" text="Equipos Registrados"
+                            icon="bi bi-trophy" theme="warning" url="#" url-text="Ver todos los equipos"
+                            class="shadow-sm mb-0 compact-small-box">
+                        </x-adminlte-small-box>
+                    </div>
+                    <div>
+                        <x-adminlte-small-box title="Top 5" text="Minijuegos Activos" icon="bi bi-controller"
+                            theme="info" url="#" url-text="Ver puntajes" class="shadow-sm mb-0 compact-small-box">
+                        </x-adminlte-small-box>
+                    </div>
                 </div>
             </div>
 
@@ -94,7 +98,7 @@
                     <x-adminlte-card title="Ranking de Equipos (Top General)" theme="primary" theme-mode="outline"
                         icon="bi bi-trophy-fill" class="shadow-sm h-100 mb-0">
 
-                        <div class="d-flex flex-column gap-2" style="padding: 0.25rem 0;">
+                        <div class="d-flex flex-column" style="padding: 0.25rem 0; gap: 0.5rem;">
                             @forelse($equiposRanking->sortByDesc('total_recaudado')->values() as $index => $team)
                                 @php
                                     $logoUrl = $team->logo ? asset('storage/' . $team->logo) : null;
@@ -113,27 +117,27 @@
                                     );
                                 @endphp
 
-                                <div class="p-2.5 rounded border shadow-sm"
+                                <div class="p-2 rounded border shadow-sm"
                                     style="background-color: var(--bs-tertiary-bg) !important;">
-                                    <div class="d-flex justify-content-between align-items-center mb-1.5">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-dark px-1.5 py-1"
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-dark px-1 py-1 me-2"
                                                 style="font-size: 0.7rem;">#{{ $loop->iteration }}</span>
 
                                             @if ($logoUrl)
                                                 <img src="{{ $logoUrl }}" alt="{{ $teamNombre }}"
-                                                    class="rounded-circle border border-2 border-white shadow-sm flex-shrink-0"
-                                                    style="width: 38px; height: 38px; object-fit: cover;"
+                                                    class="rounded-circle border-2 border-white shadow-sm me-2"
+                                                    style="width: 38px; height: 38px; object-fit: cover; flex-shrink: 0;"
                                                     title="Equipo: {{ $teamNombre }}">
                                             @else
-                                                <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm flex-shrink-0 border border-white"
-                                                    style="width: 38px; height: 38px; font-size: 0.75rem;"
+                                                <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center font-weight-bold shadow-sm border-2 border-white me-2"
+                                                    style="width: 38px; height: 38px; font-size: 0.75rem; flex-shrink: 0;"
                                                     title="Equipo: {{ $teamNombre }}">
                                                     {{ strtoupper(substr($teamNombre, 0, 2)) }}
                                                 </div>
                                             @endif
 
-                                            <span class="fw-bold text-body ms-1" style="font-size: 0.9rem;">
+                                            <span class="font-weight-bold text-body" style="font-size: 0.9rem;">
                                                 {{ $teamNombre }}
                                             </span>
                                         </div>
@@ -163,7 +167,7 @@
                     <x-adminlte-card title="Mejores Puntajes - Juegos individuales (Top 5)" theme="info"
                         theme-mode="outline" icon="bi bi-controller" class="shadow-sm h-100 mb-0">
 
-                        <div class="d-flex flex-column gap-2" style="padding: 0.25rem 0;">
+                        <div class="d-flex flex-column" style="padding: 0.25rem 0; gap: 0.5rem;">
                             @forelse($mejoresPuntajesJuegos->sortByDesc('puntaje')->values() as $index => $puntaje)
                                 @php
                                     $maxPuntaje =
@@ -173,7 +177,7 @@
                                     $porcentaje = min(round(($puntaje->puntaje / $maxPuntaje) * 100), 100);
 
                                     $themes = ['success', 'primary', 'info', 'warning', 'teal'];
-                                    $currentTheme = $themes[$index] ?? 'sky';
+                                    $currentTheme = $themes[$index] ?? 'secondary';
 
                                     $icons = [
                                         'bi bi-award-fill text-warning',
@@ -197,51 +201,51 @@
                                     $userAlias = $puntaje->alias ?? 'Usuario';
                                 @endphp
 
-                                <div class="p-2.5 rounded border shadow-sm"
+                                <div class="p-2 rounded border shadow-sm"
                                     style="background-color: var(--bs-tertiary-bg) !important;">
-                                    <div class="d-flex justify-content-between align-items-center mb-1.5">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-dark px-1.5 py-1"
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-dark px-1 py-1 me-2"
                                                 style="font-size: 0.7rem;">#{{ $loop->iteration }}</span>
 
                                             @if ($teamLogoUrl)
                                                 <img src="{{ $teamLogoUrl }}" alt="{{ $teamNombre }}"
-                                                    class="rounded-circle border border-2 border-white shadow-sm flex-shrink-0"
-                                                    style="width: 24px; height: 24px; object-fit: cover;"
+                                                    class="rounded-circle border-2 border-white shadow-sm me-1"
+                                                    style="width: 24px; height: 24px; object-fit: cover; flex-shrink: 0;"
                                                     title="Equipo: {{ $teamNombre }}">
                                             @else
-                                                <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center fw-bold shadow-sm flex-shrink-0 border border-white"
-                                                    style="width: 24px; height: 24px; font-size: 0.55rem;"
+                                                <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center font-weight-bold shadow-sm border-2 border-white me-1"
+                                                    style="width: 24px; height: 24px; font-size: 0.55rem; flex-shrink: 0;"
                                                     title="Equipo: {{ $teamNombre }}">
                                                     {{ strtoupper(substr($teamNombre, 0, 2)) }}
                                                 </div>
                                             @endif
 
-                                            <span class="fw-bold text-body ms-1" style="font-size: 0.85rem;">
+                                            <span class="font-weight-bold text-body me-1" style="font-size: 0.85rem;">
                                                 {{ $teamNombre }}
                                             </span>
-                                            <span class="text-muted" style="font-size: 0.8rem;">•</span>
-                                            <span class="fw-bold text-body" style="font-size: 0.85rem;">
+                                            <span class="text-muted me-1" style="font-size: 0.8rem;">•</span>
+                                            <span class="font-weight-bold text-body me-2" style="font-size: 0.85rem;">
                                                 {{ $userAlias }}
                                             </span>
 
                                             @if ($userAvatarUrl)
                                                 <img src="{{ $userAvatarUrl }}" alt="{{ $userAlias }}"
-                                                    class="rounded-circle border border-2 border-white shadow-sm flex-shrink-0"
-                                                    style="width: 32px; height: 32px; object-fit: cover;"
+                                                    class="rounded-circle border-2 border-white shadow-sm"
+                                                    style="width: 32px; height: 32px; object-fit: cover; flex-shrink: 0;"
                                                     title="Usuario: {{ $userAlias }}">
                                             @else
-                                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center shadow-sm flex-shrink-0 border border-white"
-                                                    style="width: 32px; height: 32px; font-size: 0.7rem;"
+                                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center shadow-sm border-2 border-white"
+                                                    style="width: 32px; height: 32px; font-size: 0.7rem; flex-shrink: 0;"
                                                     title="Usuario: {{ $userAlias }}">
                                                     <i class="{{ $currentIcon }}" style="font-size: 0.8rem;"></i>
                                                 </div>
                                             @endif
                                         </div>
 
-                                        <!-- Badge destacado con el puntaje exacto a la derecha (igual que en Equipos) -->
-                                        <div class="d-flex align-items-center gap-1">
-                                            <span class="badge bg-secondary"
+                                        <!-- Badge destacado con el puntaje exacto a la derecha -->
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-secondary me-1"
                                                 style="font-size: 0.65rem;">{{ $puntaje->juego_titulo }}</span>
                                             <span class="badge bg-info px-2 py-1"
                                                 style="font-size: 0.8rem;">{{ number_format($puntaje->puntaje ?? 0, 0) }}

@@ -51,27 +51,26 @@ class ConfiguracionController extends Controller
         // Manejo de la subida del Logotipo
         // Manejo de la subida del Logotipo
         // Manejo de la subida del Logotipo
+        // Manejo de la subida del Logotipo
         if ($request->hasFile('logo')) {
-            // Si ya existía un logo previo, lo eliminamos de S3 de forma segura
-            if ($configuracion->logo) {
-                $parsedUrl = parse_url($configuracion->logo, PHP_URL_PATH);
-                $relativePath = preg_replace('/^\/storage\/v1\/object\/public\/[^\/]+\//', '', $parsedUrl);
+            try {
+                // Guardamos el nuevo archivo directamente en el disco S3
+                $path = $request->file('logo')->store('tapita/logos', 's3');
 
-                if ($relativePath) {
-                    /** @var \Illuminate\Filesystem\FilesystemAdapter $s3 */
-                    $s3 = Storage::disk('s3');
-                    $s3->delete($relativePath);
+                // Si por alguna razón $path viene vacío, lanzamos una excepción
+                if (!$path) {
+                    throw new \Exception("Laravel no pudo retornar la ruta del archivo desde el disco S3.");
                 }
+
+                // Construimos explícitamente la URL pública web de Supabase (/object/public/)
+                $baseUrl = rtrim(env('AWS_ENDPOINT'), '/s3');
+                $bucket = env('AWS_BUCKET');
+
+                $data['logo'] = "{$baseUrl}/object/public/{$bucket}/{$path}";
+            } catch (\Exception $e) {
+                // Esto detendrá la ejecución y te mostrará el error exacto en la pantalla de Render
+                return back()->withErrors(['logo' => 'Error al subir a S3: ' . $e->getMessage()]);
             }
-
-            // Guardamos el nuevo archivo directamente en el disco S3
-            $path = $request->file('logo')->store('tapita/logos', 's3');
-
-            // Construimos explícitamente la URL pública web de Supabase (/object/public/)
-            $baseUrl = rtrim(env('AWS_ENDPOINT'), '/s3');
-            $bucket = env('AWS_BUCKET');
-
-            $data['logo'] = "{$baseUrl}/object/public/{$bucket}/{$path}";
         }
 
         // Actualizamos el registro

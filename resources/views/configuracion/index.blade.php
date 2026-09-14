@@ -3,7 +3,7 @@
 @section('title', $configGlobal->nombre ?? '@tech')
 
 {{-- Esto añade la imagen del logo como favicon de la pestaña --}}
-ink rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" t
+<link rel="icon" href="{{ $configGlobal->logo ?? asset('usb/don bosco.png') }}">
 
 {{-- Activamos SweetAlert2 para las notificaciones Toast --}}
 @section('plugins.Sweetalert2', true)

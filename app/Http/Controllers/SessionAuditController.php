@@ -28,7 +28,7 @@ class SessionAuditController extends Controller
     }
 
     // Opcional: Permitir al admin expulsar/cerrar la sesión de alguien por la fuerza
-    public function destroy($id)
+    public function destroy(int $id)
     {
         DB::table('sessions')->where('id', $id)->delete();
 

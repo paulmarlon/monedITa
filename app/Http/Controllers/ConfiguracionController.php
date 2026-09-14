@@ -13,7 +13,6 @@ class ConfiguracionController extends Controller
      */
     public function index()
     {
-        // Buscamos el registro con ID 1, o lo creamos por defecto si la tabla está vacía
         $configuracion = Configuracion::firstOrCreate(
             ['id' => 1],
             [
@@ -37,7 +36,7 @@ class ConfiguracionController extends Controller
             'telefono' => 'nullable|string|max:50',
             'correo' => 'nullable|email|max:255',
             'web' => 'nullable|url|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048', // Máximo 2MB
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
         ], [
             'nombre.required' => 'El nombre del sistema es obligatorio.',
             'correo.email' => 'El formato del correo electrónico no es válido.',
@@ -51,14 +50,17 @@ class ConfiguracionController extends Controller
 
         // Manejo de la subida del Logotipo
         if ($request->hasFile('logo')) {
-            // Si ya existía un logo previo en S3, lo eliminamos para no acumular basura
-            if ($configuracion->logo && Storage::disk('s3')->exists($configuracion->logo)) {
-                Storage::disk('s3')->delete($configuracion->logo);
+            // Si ya existía un logo previo, intentamos limpiarlo
+            if ($configuracion->logo) {
+                $oldPath = str_replace(Storage::url(''), '', $configuracion->logo);
+                Storage::delete($oldPath);
             }
 
-            // Guardamos el nuevo archivo en el bucket de Supabase dentro de tapita/logos
+            // Guardamos el nuevo archivo en el disco por defecto (S3 / Supabase) dentro de tapita/logos
             $path = $request->file('logo')->store('tapita/logos', 's3');
-            $data['logo'] = $path;
+
+            // Guardamos la URL COMPLETA en la base de datos sin errores de linter
+            $data['logo'] = Storage::url($path);
         }
 
         // Actualizamos el registro

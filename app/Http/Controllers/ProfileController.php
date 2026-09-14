@@ -44,19 +44,23 @@ class ProfileController extends Controller
 
         // Procesar la subida del avatar si existe
         if ($request->hasFile('avatar')) {
-            // Si ya tenía un avatar anterior en S3 y no es una URL externa, lo borramos
-            if ($user->avatar && !str_starts_with($user->avatar, 'http') && \Illuminate\Support\Facades\Storage::disk('s3')->exists($user->avatar)) {
-                \Illuminate\Support\Facades\Storage::disk('s3')->delete($user->avatar);
+            // Si ya tenía un avatar anterior y es una URL completa de Supabase, limpiamos
+            if ($user->avatar && !str_starts_with($user->avatar, 'http')) {
+                // Si guardabas ruta relativa antes
+                if (Storage::exists($user->avatar)) {
+                    Storage::delete($user->avatar);
+                }
+            } elseif ($user->avatar && str_starts_with($user->avatar, 'http')) {
+                // Si ya guardaba URL completa, extraemos la ruta para borrarla en S3
+                $oldPath = str_replace(Storage::url(''), '', $user->avatar);
+                Storage::delete($oldPath);
             }
 
-            // Guardamos en el disco s3 dentro de la carpeta tapita/avatars
+            // Guardamos el nuevo archivo en el disco por defecto (S3) dentro de tapita/avatars
             $path = $request->file('avatar')->store('tapita/avatars', 's3');
 
-            // Opcional: Si necesitas que $user->avatar guarde la URL pública completa para mostrarla directo en la vista:
-            // $user->avatar = \Illuminate\Support\Facades\Storage::disk('s3')->url($path);
-
-            // O si prefieres guardar solo la ruta relativa (ej: 'tapita/avatars/foto.png'):
-            $user->avatar = $path;
+            // Guardamos la URL COMPLETA en la base de datos
+            $user->avatar = Storage::url($path);
         }
 
         // Como $user viene directamente de User::find(), el método save() funcionará perfectamente

@@ -933,7 +933,7 @@ return [
          * en interfaces interactivas con paginación, búsqueda en tiempo real y ordenamiento.
          */
         'Datatables' => [
-            'active' => false,
+            'active' => true,
             'files' => [
                 [
                     'type' => 'js',

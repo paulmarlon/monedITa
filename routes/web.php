@@ -83,27 +83,10 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         ->middleware('can:ver_historial_accesos');
 });
 Route::get('/probar-session-db', function () {
-    try {
-        // 1. Intentar escribir en la sesión de Laravel
-        Session::put('test_key', 'Hola desde Render');
-        $sessionId = Session::getId();
-
-        // 2. Forzar la escritura explícita de la sesión a la base de datos
-        Session::save();
-
-        // 3. Verificar si existe en la tabla integrador.sessions
-        $exists = DB::table('integrador.sessions')->where('id', $sessionId)->exists();
-
-        return response()->json([
-            'status' => 'success',
-            'session_id' => $sessionId,
-            'saved_in_db' => $exists,
-            'total_sessions_in_table' => DB::table('integrador.sessions')->count()
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage()
-        ], 500);
-    }
+    return response()->json([
+        'driver_real_en_render' => config('session.driver'),
+        'tabla_real_en_render' => config('session.table'),
+        'conexion_bd' => config('database.default'),
+        'sesiones_en_public' => \Illuminate\Support\Facades\Schema::hasTable('sessions') ? DB::table('sessions')->count() : 'No existe tabla en public'
+    ]);
 });

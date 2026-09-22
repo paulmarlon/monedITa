@@ -1,19 +1,16 @@
+@php
+    // Si ya tenemos el logo globalmente, actualizamos la configuración de AdminLTE de inmediato
+    if (isset($configGlobal) && !empty($configGlobal->logo)) {
+        config(['adminlte.logo_img' => 'storage/' . $configGlobal->logo]);
+    }
+@endphp
+
 @section('title', $configGlobal->nombre ?? '@tech')
 
 {{-- Esto añade la imagen del logo como favicon de la pestaña --}}
 @section('adminlte_css_pre')
-    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
+    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/bosco.png')) }}" type="image/png">
 @stop
-@php
-    // Consultamos la base de datos para inyectar el logo dinámicamente en el registro
-    $configLogo = \Illuminate\Support\Facades\Schema::hasTable('configuracions')
-        ? \Illuminate\Support\Facades\DB::table('configuracions')->first()
-        : null;
-
-    if ($configLogo && !empty($configLogo->logo)) {
-        config(['adminlte.logo_img' => 'storage/' . $configLogo->logo]);
-    }
-@endphp
 
 @extends('adminlte::auth.auth-page', ['authType' => 'register'])
 

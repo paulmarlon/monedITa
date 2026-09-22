@@ -1,19 +1,21 @@
-@section('title', $configGlobal->nombre ?? '@tech')
-
-{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
-@section('adminlte_css_pre')
-    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/don bosco.png')) }}" type="image/png">
-@stop
 @php
-    // Consultamos la base de datos para inyectar el logo dinámicamente en la configuración de la app
+    // 1. Consultamos la base de datos PRIMERO que nada
     $configLogo = \Illuminate\Support\Facades\Schema::hasTable('configuracions')
         ? \Illuminate\Support\Facades\DB::table('configuracions')->first()
         : null;
 
+    // 2. Si existe el logo en BD, sobreescribimos la configuración de AdminLTE ANTES de renderizar
     if ($configLogo && !empty($configLogo->logo)) {
         config(['adminlte.logo_img' => 'storage/' . $configLogo->logo]);
     }
 @endphp
+
+@section('title', $configGlobal->nombre ?? '@tech')
+
+{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
+@section('adminlte_css_pre')
+    <link rel="icon" href="{{ asset('storage/' . ($configLogo->logo ?? 'usb/bosco.png')) }}" type="image/png">
+@stop
 
 @extends('adminlte::auth.auth-page', ['authType' => 'login'])
 

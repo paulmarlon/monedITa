@@ -49,6 +49,7 @@ class RoleSeeder extends Seeder
             'ver_dino',
             // --- NUEVO PERMISO DE AUDITORÍA ---
             'ver_sesiones_activas',        // Para ver e invalidar sesiones activas e IPs
+            'expulsar_usuarios',
             'ver_historial_accesos',
         ];
 
@@ -74,6 +75,9 @@ class RoleSeeder extends Seeder
             //'eliminar_puntajes',    // Para Admin/Supervisor
             //'ver_mis_puntajes',
             'ver_dino',
+            'ver_sesiones_activas',        // Para ver e invalidar sesiones activas e IPs
+            'expulsar_usuarios',
+
         ]);
 
         // 5. Asignar permisos específicos al ESTUDIANTE (Uso de su monedero y transferencias)

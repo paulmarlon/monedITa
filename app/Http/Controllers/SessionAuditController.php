@@ -21,6 +21,7 @@ class SessionAuditController extends Controller
                 'users.email as user_email',
                 'users.alias as user_alias'
             )
+            ->whereNotNull('integrador.sessions.user_id') // <-- Filtra los pings automáticos de Render (Go-http-client)
             ->orderByDesc('integrador.sessions.last_activity')
             ->get();
 

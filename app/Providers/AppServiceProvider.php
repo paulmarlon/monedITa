@@ -38,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // --- EVENTO LOGIN ---
+        // --- EVENTO LOGIN ---
         Event::listen(Login::class, function (Login $event) {
             $request = app(Request::class);
             $userId = $event->user->getAuthIdentifier();
@@ -45,8 +46,8 @@ class AppServiceProvider extends ServiceProvider
             // Obtenemos el ID de la sesión actual de forma segura
             $currentSessionId = $request->hasSession() ? $request->session()->getId() : null;
 
-            // 1. Borramos sesiones anteriores del mismo usuario (excepto la actual si existe ID)
-            $query = DB::table('sessions')->where('user_id', $userId);
+            // 1. Borramos sesiones anteriores del mismo usuario en el esquema integrador
+            $query = DB::table('integrador.sessions')->where('user_id', $userId);
 
             if ($currentSessionId) {
                 $query->where('id', '!=', $currentSessionId);
@@ -54,8 +55,8 @@ class AppServiceProvider extends ServiceProvider
 
             $query->delete();
 
-            // 2. Inserta el registro permanente en la bitácora histórica de accesos
-            DB::table('auditoria_accesos')->insert([
+            // 2. Inserta el registro permanente en la bitácora histórica del esquema integrador
+            DB::table('integrador.auditoria_accesos')->insert([
                 'user_id'    => $userId,
                 'ip_address' => (string) $request->ip(),
                 'user_agent' => (string) $request->header('User-Agent'),

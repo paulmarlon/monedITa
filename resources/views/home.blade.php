@@ -18,7 +18,7 @@
                 <div class="card-body">
                     <!-- Contenedor circular adaptativo para el logo al medio -->
                     <div class="mb-4 d-inline-block p-4 rounded-circle border border-primary shadow-sm bg-body">
-                        <img src="{{ asset('storage/usb/don bosco.png') }}" alt="Logo Institucional"
+                        <img src="{{ asset('storage/usb/bosco.png') }}" alt="Logo Institucional"
                             style="height: 100px; width: 100px; object-fit: cover;" class="rounded-circle img-fluid">
                     </div>
 

@@ -1,5 +1,5 @@
 @php
-    // Si ya tenemos el logo globalmente y es una URL completa
+    // Si ya tenemos el logo globalmente y es una URL completa de Supabase
     if (isset($configGlobal) && !empty($configGlobal->logo)) {
         config(['adminlte.logo_img' => $configGlobal->logo]);
     }
@@ -10,16 +10,6 @@
 {{-- Esto añade la imagen del logo como favicon de la pestaña --}}
 @section('adminlte_css_pre')
     <link rel="icon" href="{{ $configGlobal->logo ?? asset('usb/bosco.png') }}" type="image/png">
-@stop
-
-@extends('adminlte::auth.auth-page', ['authType' => 'login'])
-...
-
-@section('title', $configGlobal->nombre ?? '@tech')
-
-{{-- Esto añade la imagen del logo como favicon de la pestaña --}}
-@section('adminlte_css_pre')
-    <link rel="icon" href="{{ asset('storage/' . ($configLogo->logo ?? 'usb/bosco.png')) }}" type="image/png">
 @stop
 
 @extends('adminlte::auth.auth-page', ['authType' => 'login'])

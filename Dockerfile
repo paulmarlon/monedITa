@@ -24,6 +24,9 @@ COPY . .
 # Instalar dependencias de PHP para producción
 RUN composer install --no-dev --optimize-autoloader --verbose
 
+# Limpiar caché de configuración para que Laravel lea las variables de entorno del panel de Render en runtime
+RUN php artisan config:clear && php artisan route:clear
+
 # Ajustar permisos de las carpetas de almacenamiento y caché de Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
@@ -41,8 +44,6 @@ RUN echo '<Directory /var/www/html/public/>\n\
     </Directory>' >> /etc/apache2/apache2.conf
 
 RUN a2enmod rewrite
-
-
 
 # Render asigna dinámicamente un puerto a través de la variable $PORT
 ENV PORT=10000

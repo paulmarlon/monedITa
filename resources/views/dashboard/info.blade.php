@@ -99,20 +99,24 @@
                         <div class="d-flex flex-column" style="padding: 0.25rem 0; gap: 0.5rem;">
                             @forelse($equiposRanking->sortByDesc('total_recaudado')->values() as $index => $team)
                                 @php
-                                    $logoUrl = $team->logo ? asset('storage/' . $team->logo) : null;
+                                    $logoUrl = null;
+                                    if ($team->logo) {
+                                        if (str_starts_with($team->logo, 'http')) {
+                                            $logoUrl = $team->logo;
+                                        } elseif (env('AWS_ENDPOINT')) {
+                                            // Si usas Supabase S3 / Storage configurado en .env
+                                            $logoUrl =
+                                                rtrim(env('AWS_ENDPOINT'), '/s3') .
+                                                '/object/public/' .
+                                                env('AWS_BUCKET') .
+                                                '/' .
+                                                $team->logo;
+                                        } else {
+                                            // Si se guarda localmente en storage/app/public
+                                            $logoUrl = asset('storage/' . $team->logo);
+                                        }
+                                    }
                                     $teamNombre = $team->nombre ?? 'Equipo';
-
-                                    $themes = ['success', 'primary', 'info', 'warning', 'danger'];
-                                    $currentTheme = $themes[$index] ?? 'secondary';
-
-                                    $maxRecaudado =
-                                        $equiposRanking->max('total_recaudado') > 0
-                                            ? $equiposRanking->max('total_recaudado')
-                                            : 100;
-                                    $porcentajeTeam = min(
-                                        round((($team->total_recaudado ?? 0) / $maxRecaudado) * 100),
-                                        100,
-                                    );
                                 @endphp
 
                                 <div class="p-2 rounded border shadow-sm"
@@ -186,17 +190,37 @@
                                     ];
                                     $currentIcon = $icons[$index] ?? 'bi bi-person-badge';
 
-                                    $userAvatarUrl =
-                                        isset($puntaje->user_avatar) && $puntaje->user_avatar
-                                            ? asset('storage/' . $puntaje->user_avatar)
-                                            : null;
-                                    $teamLogoUrl =
-                                        isset($puntaje->team_logo) && $puntaje->team_logo
-                                            ? asset('storage/' . $puntaje->team_logo)
-                                            : null;
+                                    $userAvatarUrl = null;
+                                    if (isset($puntaje->user_avatar) && $puntaje->user_avatar) {
+                                        if (str_starts_with($puntaje->user_avatar, 'http')) {
+                                            $userAvatarUrl = $puntaje->user_avatar;
+                                        } elseif (env('AWS_ENDPOINT')) {
+                                            $userAvatarUrl =
+                                                rtrim(env('AWS_ENDPOINT'), '/s3') .
+                                                '/object/public/' .
+                                                env('AWS_BUCKET') .
+                                                '/' .
+                                                $puntaje->user_avatar;
+                                        } else {
+                                            $userAvatarUrl = asset('storage/' . $puntaje->user_avatar);
+                                        }
+                                    }
 
-                                    $teamNombre = $puntaje->team_nombre ?? 'Equipo';
-                                    $userAlias = $puntaje->alias ?? 'Usuario';
+                                    $teamLogoUrl = null;
+                                    if (isset($puntaje->team_logo) && $puntaje->team_logo) {
+                                        if (str_starts_with($puntaje->team_logo, 'http')) {
+                                            $teamLogoUrl = $puntaje->team_logo;
+                                        } elseif (env('AWS_ENDPOINT')) {
+                                            $teamLogoUrl =
+                                                rtrim(env('AWS_ENDPOINT'), '/s3') .
+                                                '/object/public/' .
+                                                env('AWS_BUCKET') .
+                                                '/' .
+                                                $puntaje->team_logo;
+                                        } else {
+                                            $teamLogoUrl = asset('storage/' . $puntaje->team_logo);
+                                        }
+                                    }
                                 @endphp
 
                                 <div class="p-2 rounded border shadow-sm"

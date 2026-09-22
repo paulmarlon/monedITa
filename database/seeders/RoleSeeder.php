@@ -48,7 +48,7 @@ class RoleSeeder extends Seeder
             //'ver_mis_puntajes',
             'ver_dino',
             // --- NUEVO PERMISO DE AUDITORÍA ---
-            'ver_auditoria',        // Para ver e invalidar sesiones activas e IPs
+            'ver_sesiones_activas',        // Para ver e invalidar sesiones activas e IPs
             'ver_historial_accesos',
         ];
 

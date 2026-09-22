@@ -1,7 +1,7 @@
 @php
-    // Si ya tenemos el logo globalmente, actualizamos la configuración de AdminLTE de inmediato
+    // Si ya tenemos el logo globalmente y es una URL completa
     if (isset($configGlobal) && !empty($configGlobal->logo)) {
-        config(['adminlte.logo_img' => 'storage/' . $configGlobal->logo]);
+        config(['adminlte.logo_img' => $configGlobal->logo]);
     }
 @endphp
 
@@ -9,7 +9,7 @@
 
 {{-- Esto añade la imagen del logo como favicon de la pestaña --}}
 @section('adminlte_css_pre')
-    <link rel="icon" href="{{ asset('storage/' . ($configGlobal->logo ?? 'usb/bosco.png')) }}" type="image/png">
+    <link rel="icon" href="{{ $configGlobal->logo ?? asset('usb/don bosco.png') }}" type="image/png">
 @stop
 
 @extends('adminlte::auth.auth-page', ['authType' => 'register'])

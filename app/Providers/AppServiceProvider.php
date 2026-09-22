@@ -43,10 +43,13 @@ class AppServiceProvider extends ServiceProvider
             $request = app(Request::class);
             $userId = $event->user->getAuthIdentifier();
 
-            // 1. Opcional si pides contraseña en el login, pero para sesión única en BD con el driver database:
-            // Laravel invalida las demás sesiones automáticamente si usas el middleware 'auth.session'.
+            // 1. Eliminar sesiones anteriores de este usuario en la base de datos (excepto la actual si la hubiera)
+            DB::table('integrador.sessions')
+                ->where('user_id', $userId)
+                ->where('id', '!=', $request->session()->getId())
+                ->delete();
 
-            // 2. Registramos la bitácora histórica en integrador.auditoria_accesos
+            // 2. Registrar la bitácora histórica en integrador.auditoria_accesos
             DB::table('integrador.auditoria_accesos')->insert([
                 'user_id'    => $userId,
                 'ip_address' => (string) $request->ip(),

@@ -104,7 +104,6 @@
                                         if (str_starts_with($team->logo, 'http')) {
                                             $logoUrl = $team->logo;
                                         } elseif (env('AWS_ENDPOINT')) {
-                                            // Si usas Supabase S3 / Storage configurado en .env
                                             $logoUrl =
                                                 rtrim(env('AWS_ENDPOINT'), '/s3') .
                                                 '/object/public/' .
@@ -112,11 +111,23 @@
                                                 '/' .
                                                 $team->logo;
                                         } else {
-                                            // Si se guarda localmente en storage/app/public
                                             $logoUrl = asset('storage/' . $team->logo);
                                         }
                                     }
                                     $teamNombre = $team->nombre ?? 'Equipo';
+
+                                    // <-- ¡FALTABA ESTO AQUÍ! -->
+                                    $maxRecaudado =
+                                        $equiposRanking->max('total_recaudado') > 0
+                                            ? $equiposRanking->max('total_recaudado')
+                                            : 100;
+                                    $porcentajeTeam = min(
+                                        round((($team->total_recaudado ?? 0) / $maxRecaudado) * 100),
+                                        100,
+                                    );
+
+                                    $themes = ['success', 'primary', 'info', 'warning', 'danger'];
+                                    $currentTheme = $themes[$index] ?? 'secondary';
                                 @endphp
 
                                 <div class="p-2 rounded border shadow-sm"
@@ -189,6 +200,10 @@
                                         'bi bi-controller text-success',
                                     ];
                                     $currentIcon = $icons[$index] ?? 'bi bi-person-badge';
+
+                                    // <-- ¡FALTABAN ESTAS VARIABLES AQUÍ! -->
+                                    $teamNombre = $puntaje->team_nombre ?? 'Equipo';
+                                    $userAlias = $puntaje->alias ?? 'Usuario';
 
                                     $userAvatarUrl = null;
                                     if (isset($puntaje->user_avatar) && $puntaje->user_avatar) {

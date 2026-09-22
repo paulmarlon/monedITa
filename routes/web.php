@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CicloController;
 use App\Http\Controllers\TeamController;
@@ -79,4 +81,29 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/admin/historial-accesos', [AccessLogController::class, 'index'])
         ->name('admin.historial.index')
         ->middleware('can:ver_historial_accesos');
+});
+Route::get('/probar-session-db', function () {
+    try {
+        // 1. Intentar escribir en la sesión de Laravel
+        Session::put('test_key', 'Hola desde Render');
+        $sessionId = Session::getId();
+
+        // 2. Forzar la escritura explícita de la sesión a la base de datos
+        Session::save();
+
+        // 3. Verificar si existe en la tabla integrador.sessions
+        $exists = DB::table('integrador.sessions')->where('id', $sessionId)->exists();
+
+        return response()->json([
+            'status' => 'success',
+            'session_id' => $sessionId,
+            'saved_in_db' => $exists,
+            'total_sessions_in_table' => DB::table('integrador.sessions')->count()
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
 });

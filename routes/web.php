@@ -82,11 +82,3 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         ->name('admin.historial.index')
         ->middleware('can:ver_historial_accesos');
 });
-Route::get('/probar-session-db', function () {
-    return response()->json([
-        'driver_real_en_render' => config('session.driver'),
-        'tabla_real_en_render' => config('session.table'),
-        'conexion_bd' => config('database.default'),
-        'sesiones_en_public' => \Illuminate\Support\Facades\Schema::hasTable('sessions') ? DB::table('sessions')->count() : 'No existe tabla en public'
-    ]);
-});

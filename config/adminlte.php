@@ -882,7 +882,7 @@ return [
             'route' => 'admin.sessions.index',
             'icon' => 'bi bi-shield-exclamation me-1',
             'classes' => 'btn-efecto-elevar text-warning',
-            'can' => 'ver_auditoria',
+            'can' => 'ver_sesiones_activas',
         ],
         [
             'text' => 'Historial de Accesos',

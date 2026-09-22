@@ -43,19 +43,10 @@ class AppServiceProvider extends ServiceProvider
             $request = app(Request::class);
             $userId = $event->user->getAuthIdentifier();
 
-            // Obtenemos el ID de la sesión actual de forma segura
-            $currentSessionId = $request->hasSession() ? $request->session()->getId() : null;
+            // 1. Opcional si pides contraseña en el login, pero para sesión única en BD con el driver database:
+            // Laravel invalida las demás sesiones automáticamente si usas el middleware 'auth.session'.
 
-            // 1. Borramos sesiones anteriores del mismo usuario en el esquema integrador
-            $query = DB::table('integrador.sessions')->where('user_id', $userId);
-
-            if ($currentSessionId) {
-                $query->where('id', '!=', $currentSessionId);
-            }
-
-            $query->delete();
-
-            // 2. Inserta el registro permanente en la bitácora histórica del esquema integrador
+            // 2. Registramos la bitácora histórica en integrador.auditoria_accesos
             DB::table('integrador.auditoria_accesos')->insert([
                 'user_id'    => $userId,
                 'ip_address' => (string) $request->ip(),

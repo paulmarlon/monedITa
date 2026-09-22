@@ -11,7 +11,7 @@ class SessionAuditController extends Controller
     {
         // Apuntamos explícitamente al esquema integrador.sessions
         $sesiones = DB::table('integrador.sessions')
-            ->leftJoin('users', 'integrador.sessions.user_id', '=', 'users.id')
+            ->leftJoin('integrador.users as users', 'integrador.sessions.user_id', '=', 'users.id')
             ->select(
                 'integrador.sessions.id as session_id',
                 'integrador.sessions.ip_address',

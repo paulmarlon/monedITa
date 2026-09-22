@@ -70,11 +70,12 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         return view('minijuegos.dino');
     })->name('juegos.dino')->middleware('can:ver_dino');
 
-    Route::post('minijuegos/{slug}/iniciar', [MinijuegoPuntajeController::class, 'iniciarPartida'])->name('minijuegos.iniciar')->middleware('auth');
-    Route::post('minijuegos/guardar-puntaje', [MinijuegoPuntajeController::class, 'store'])->name('minijuegos.guardar')->middleware('auth');
+    Route::post('minijuegos/{slug}/iniciar', [MinijuegoPuntajeController::class, 'iniciarPartida'])->name('minijuegos.iniciar');
+    Route::post('minijuegos/guardar-puntaje', [MinijuegoPuntajeController::class, 'store'])->name('minijuegos.guardar');
     // Auditoría de Sesiones Activas e IPs
-    Route::get('/admin/sesiones', [SessionAuditController::class, 'index'])->name('admin.sessions.index');
-    Route::delete('/admin/sesiones/{id}', [SessionAuditController::class, 'destroy'])->name('admin.sessions.destroy');
+    // Auditoría de Sesiones Activas e IPs
+    Route::get('/admin/sesiones', [SessionAuditController::class, 'index'])->name('admin.sessions.index')->middleware('can:ver_sesiones_activas');
+    Route::delete('/admin/sesiones/{id}', [SessionAuditController::class, 'destroy'])->name('admin.sessions.destroy')->middleware('can:expulsar_usuarios');
     Route::get('/admin/historial-accesos', [AccessLogController::class, 'index'])
         ->name('admin.historial.index')
         ->middleware('can:ver_historial_accesos');

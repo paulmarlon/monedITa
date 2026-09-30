@@ -84,4 +84,3 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         ->name('admin.historial.index')
         ->middleware('can:ver_historial_accesos');
 });
-Route::post('/login', [LoginController::class, 'loginApi']);

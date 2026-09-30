@@ -16,6 +16,8 @@ use App\Http\Controllers\JuegoController;
 use App\Http\Controllers\MinijuegoPuntajeController;
 use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\AccessLogController;
+use App\Http\Controllers\Auth\LoginController;
+
 
 
 Route::get('/', function () {
@@ -82,3 +84,4 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
         ->name('admin.historial.index')
         ->middleware('can:ver_historial_accesos');
 });
+Route::post('/login', [LoginController::class, 'loginApi']);

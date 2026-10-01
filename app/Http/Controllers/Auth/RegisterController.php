@@ -4,47 +4,22 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\BonoBienvenida;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
     protected $redirectTo = '/home';
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -57,22 +32,18 @@ class RegisterController extends Controller
                 'email',
                 'max:255',
                 'unique:users',
-                'ends_with:usalesiana.edu.bo'
+                // CAMBIO: con "@" delante, para no aceptar dominios tipo "xusalesiana.edu.bo"
+                'ends_with:@usalesiana.edu.bo'
             ],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @return User
-     */
     protected function create(array $data)
     {
         $defaultAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($data['name']) . '&background=random&color=fff&size=128';
 
-        // 1. Crear el usuario
+        // 1. Crear el usuario (la wallet con saldo 0 la crea el hook booted() de User)
         $user = User::create([
             'registro_universitario' => $data['registro_universitario'],
             'name' => $data['name'],
@@ -82,8 +53,11 @@ class RegisterController extends Controller
             'avatar' => $defaultAvatar,
         ]);
 
-        // 2. Asignar automáticamente el rol de ESTUDIANTE
+        // 2. Asignar automaticamente el rol de ESTUDIANTE
         $user->assignRole('ESTUDIANTE');
+
+        // 3. NUEVO: 3 monedas de cortesia (registra la transaccion en el libro mayor)
+        BonoBienvenida::otorgar($user);
 
         return $user;
     }

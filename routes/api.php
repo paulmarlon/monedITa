@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\MinijuegoApiController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthApiController::class, 'login'])->middleware('throttle:5,1');
+Route::post('/register', [AuthApiController::class, 'register'])->middleware('throttle:10,1');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthApiController::class, 'me']);

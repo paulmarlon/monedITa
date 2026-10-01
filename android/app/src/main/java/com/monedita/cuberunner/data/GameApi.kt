@@ -10,6 +10,9 @@ interface GameApi {
     @POST("login")
     suspend fun login(@Body body: LoginRequest): Response<LoginResponse>
 
+    @POST("register")
+    suspend fun register(@Body body: RegisterRequest): Response<RegisterResponse>
+
     @GET("me")
     suspend fun me(): Response<MeResponse>
 

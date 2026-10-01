@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.monedita.cuberunner.data.ApiResult
 import com.monedita.cuberunner.data.GameRepository
+import com.monedita.cuberunner.data.RegisterRequest
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,6 +25,17 @@ class GameViewModel(private val repo: GameRepository) : ViewModel() {
                 is ApiResult.Fail -> onError(
                     if (r.code == 401) "Registro o contrasena incorrectos" else r.message
                 )
+            }
+        }
+
+    fun register(req: RegisterRequest, onOk: (bono: Double) -> Unit, onError: (String) -> Unit) =
+        viewModelScope.launch {
+            when (val r = repo.register(req)) {
+                is ApiResult.Ok -> {
+                    _saldo.value = r.data.saldo_actual
+                    onOk(r.data.bono_otorgado ?: 0.0)
+                }
+                is ApiResult.Fail -> onError(r.message)
             }
         }
 

@@ -6,6 +6,16 @@ data class LoginRequest(
     val device_name: String = "android"
 )
 
+data class RegisterRequest(
+    val registro_universitario: String,
+    val name: String,
+    val alias: String,
+    val email: String,
+    val password: String,
+    val password_confirmation: String,
+    val device_name: String = "android"
+)
+
 data class UserDto(
     val id: Int,
     val name: String,
@@ -19,6 +29,14 @@ data class LoginResponse(
     val token: String?,
     val user: UserDto?,
     val saldo_actual: Double?
+)
+
+data class RegisterResponse(
+    val success: Boolean,
+    val token: String?,
+    val user: UserDto?,
+    val saldo_actual: Double?,
+    val bono_otorgado: Double?
 )
 
 data class MeResponse(
@@ -47,4 +65,9 @@ data class PuntajeResponse(
     val es_record: Boolean?
 )
 
-data class ApiError(val success: Boolean?, val message: String?)
+/** Laravel responde 422 con { message, errors: { campo: [mensajes] } } */
+data class ApiError(
+    val success: Boolean?,
+    val message: String?,
+    val errors: Map<String, List<String>>?
+)

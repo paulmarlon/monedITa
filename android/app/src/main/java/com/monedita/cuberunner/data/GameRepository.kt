@@ -17,10 +17,15 @@ class GameRepository(private val api: GameApi, private val store: TokenStore) {
         if (res.isSuccessful && body != null) {
             ApiResult.Ok(body)
         } else {
-            val msg = runCatching {
-                Gson().fromJson(res.errorBody()?.string(), ApiError::class.java)?.message
+            val err = runCatching {
+                Gson().fromJson(res.errorBody()?.string(), ApiError::class.java)
             }.getOrNull()
-            ApiResult.Fail(res.code(), msg ?: "Error ${res.code()}")
+            // En validacion (422) se muestran todos los mensajes por campo
+            val detalle = err?.errors?.values?.flatten()?.joinToString("\n")
+            ApiResult.Fail(
+                res.code(),
+                detalle?.takeIf { it.isNotBlank() } ?: err?.message ?: "Error ${res.code()}"
+            )
         }
     } catch (e: IOException) {
         ApiResult.Fail(0, "Sin conexion con el servidor (${e.javaClass.simpleName})")
@@ -32,6 +37,13 @@ class GameRepository(private val api: GameApi, private val store: TokenStore) {
 
     suspend fun login(registro: String, password: String): ApiResult<LoginResponse> {
         val r = call { api.login(LoginRequest(registro, password, "android")) }
+        if (r is ApiResult.Ok) store.token = r.data.token
+        return r
+    }
+
+    suspend fun register(req: RegisterRequest): ApiResult<RegisterResponse> {
+        val r = call { api.register(req) }
+        // El registro ya deja la sesion iniciada
         if (r is ApiResult.Ok) store.token = r.data.token
         return r
     }

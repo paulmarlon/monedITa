@@ -25,7 +25,13 @@
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="1. Iniciar sesión" />
+        android:text="Iniciar sesión" />
+
+    <Button
+        android:id="@+id/btnRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Crear cuenta nueva" />
 
     <TextView
         android:id="@+id/tvSaldo"
@@ -39,7 +45,7 @@
         android:id="@+id/btnJugar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="2. Jugar (consume 1 ficha)" />
+        android:text="Jugar (consume 1 ficha)" />
 
     <TextView
         android:id="@+id/tvLog"

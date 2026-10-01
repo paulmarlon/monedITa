@@ -43,6 +43,10 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
+        findViewById<Button>(R.id.btnRegistro).setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+
         findViewById<Button>(R.id.btnJugar).setOnClickListener {
             tvLog.text = "Cobrando ficha..."
             vm.empezar(
@@ -57,7 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Al volver de jugar, trae el saldo real del servidor
+        // Al volver de jugar o de registrarse, trae el saldo real del servidor
         if (vm.haySesion()) vm.refrescarSaldo()
     }
 }

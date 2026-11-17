@@ -45,6 +45,8 @@ data class MeResponse(
     val saldo_actual: Double?
 )
 
+data class SimpleResponse(val success: Boolean?, val message: String?)
+
 data class IniciarResponse(
     val success: Boolean,
     val partida_id: String?,
@@ -63,6 +65,22 @@ data class PuntajeResponse(
     val puntaje: Int?,
     val mejor_puntaje: Int?,
     val es_record: Boolean?
+)
+
+data class RankingItem(
+    val posicion: Int,
+    val alias: String,
+    val avatar: String?,
+    val puntaje: Int,
+    val soy_yo: Boolean?
+)
+
+data class RankingResponse(
+    val success: Boolean,
+    val juego: String?,
+    val top: List<RankingItem>?,
+    val mi_posicion: Int?,
+    val mi_mejor: Int?
 )
 
 /** Laravel responde 422 con { message, errors: { campo: [mensajes] } } */

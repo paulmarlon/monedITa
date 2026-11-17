@@ -7,61 +7,55 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.monedita.cuberunner.ui.GameViewModel
 import com.monedita.cuberunner.ui.GameViewModelFactory
-import kotlinx.coroutines.launch
 
+/** Pantalla de inicio de sesion. Si ya hay sesion guardada, pasa directo al menu. */
 class MainActivity : AppCompatActivity() {
 
     private val vm: GameViewModel by viewModels { GameViewModelFactory(applicationContext) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (vm.haySesion()) {
+            irAlMenu()
+            return
+        }
+
         setContentView(R.layout.activity_main)
 
         val etRegistro = findViewById<EditText>(R.id.etRegistro)
         val etPassword = findViewById<EditText>(R.id.etPassword)
-        val tvSaldo = findViewById<TextView>(R.id.tvSaldo)
         val tvLog = findViewById<TextView>(R.id.tvLog)
+        val btnLogin = findViewById<Button>(R.id.btnLogin)
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                vm.saldo.collect { tvSaldo.text = "Saldo: ${it ?: "-"}" }
+        btnLogin.setOnClickListener {
+            val registro = etRegistro.text.toString().trim()
+            val pass = etPassword.text.toString()
+            if (registro.isEmpty() || pass.isEmpty()) {
+                tvLog.text = "Escribe tu registro y contraseña"
+                return@setOnClickListener
             }
-        }
-
-        findViewById<Button>(R.id.btnLogin).setOnClickListener {
+            btnLogin.isEnabled = false
             tvLog.text = "Conectando..."
             vm.login(
-                etRegistro.text.toString().trim(),
-                etPassword.text.toString(),
-                onOk = { tvLog.text = "Login correcto" },
-                onError = { tvLog.text = "Error: $it" }
+                registro, pass,
+                onOk = { irAlMenu() },
+                onError = { tvLog.text = it; btnLogin.isEnabled = true }
             )
         }
 
         findViewById<Button>(R.id.btnRegistro).setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
-
-        findViewById<Button>(R.id.btnJugar).setOnClickListener {
-            tvLog.text = "Cobrando ficha..."
-            vm.empezar(
-                onOk = {
-                    tvLog.text = ""
-                    startActivity(Intent(this, GameActivity::class.java))
-                },
-                onError = { tvLog.text = "Error: $it" }
-            )
-        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Al volver de jugar o de registrarse, trae el saldo real del servidor
-        if (vm.haySesion()) vm.refrescarSaldo()
+    private fun irAlMenu() {
+        startActivity(
+            Intent(this, HomeActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        )
+        finish()
     }
 }

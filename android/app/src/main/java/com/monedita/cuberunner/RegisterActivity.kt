@@ -1,5 +1,6 @@
 package com.monedita.cuberunner
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -53,7 +54,12 @@ class RegisterActivity : AppCompatActivity() {
                 onOk = { bono ->
                     val extra = if (bono > 0) " Recibiste $bono monedas de cortesía." else ""
                     Toast.makeText(this, "Cuenta creada.$extra", Toast.LENGTH_LONG).show()
-                    finish() // MainActivity actualiza el saldo al volver (onResume)
+                    // El registro deja la sesion iniciada: va directo al menu
+                    startActivity(
+                        Intent(this, HomeActivity::class.java)
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    )
+                    finish()
                 },
                 onError = { msg ->
                     tvMsg.text = msg

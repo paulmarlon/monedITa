@@ -31,6 +31,14 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".RankingActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".GameActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

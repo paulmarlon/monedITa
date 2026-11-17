@@ -3,7 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center_vertical"
     android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:text="Cube Runner"
+        android:textSize="28sp" />
 
     <EditText
         android:id="@+id/etRegistro"
@@ -32,20 +40,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Crear cuenta nueva" />
-
-    <TextView
-        android:id="@+id/tvSaldo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:text="Saldo: -"
-        android:textSize="20sp" />
-
-    <Button
-        android:id="@+id/btnJugar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Jugar (consume 1 ficha)" />
 
     <TextView
         android:id="@+id/tvLog"

@@ -13,6 +13,9 @@ interface GameApi {
     @POST("register")
     suspend fun register(@Body body: RegisterRequest): Response<RegisterResponse>
 
+    @POST("logout")
+    suspend fun logout(): Response<SimpleResponse>
+
     @GET("me")
     suspend fun me(): Response<MeResponse>
 
@@ -21,4 +24,7 @@ interface GameApi {
 
     @POST("juegos/guardar-puntaje")
     suspend fun guardarPuntaje(@Body body: PuntajeRequest): Response<PuntajeResponse>
+
+    @GET("juegos/{slug}/ranking")
+    suspend fun ranking(@Path("slug") slug: String): Response<RankingResponse>
 }

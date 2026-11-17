@@ -48,6 +48,12 @@ class GameRepository(private val api: GameApi, private val store: TokenStore) {
         return r
     }
 
+    /** Revoca el token en el servidor (si hay red) y siempre limpia la sesion local. */
+    suspend fun logout() {
+        call { api.logout() }
+        store.clear()
+    }
+
     suspend fun me(): ApiResult<MeResponse> = call { api.me() }
 
     suspend fun iniciar(slug: String): ApiResult<IniciarResponse> {
@@ -63,4 +69,6 @@ class GameRepository(private val api: GameApi, private val store: TokenStore) {
         if (r is ApiResult.Ok) store.partidaId = null
         return r
     }
+
+    suspend fun ranking(slug: String): ApiResult<RankingResponse> = call { api.ranking(slug) }
 }

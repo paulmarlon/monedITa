@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -25,7 +25,7 @@ use Laravel\Sanctum\HasApiTokens;
     'team_id'
 ])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -86,5 +86,10 @@ class User extends Authenticatable
     public function minijuegosPuntajes()
     {
         return $this->hasMany(MinijuegoPuntaje::class, 'user_id');
+    }
+
+    public function dispositivoConfiable()
+    {
+        return $this->hasMany(DispositivoConfiable::class, 'user_id');
     }
 }

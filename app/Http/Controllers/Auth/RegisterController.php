@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ciclo;
+use App\Models\CicloUsuarioRole;
 use App\Models\User;
 use App\Services\BonoBienvenida;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -32,8 +34,7 @@ class RegisterController extends Controller
                 'email',
                 'max:255',
                 'unique:users',
-                // CAMBIO: con "@" delante, para no aceptar dominios tipo "xusalesiana.edu.bo"
-                'ends_with:@usalesiana.edu.bo'
+                'ends_with:@usalesiana.edu.bo',
             ],
             'password' => ['required', 'string', 'min:4', 'confirmed'],
         ]);
@@ -46,17 +47,31 @@ class RegisterController extends Controller
         // 1. Crear el usuario (la wallet con saldo 0 la crea el hook booted() de User)
         $user = User::create([
             'registro_universitario' => $data['registro_universitario'],
-            'name' => $data['name'],
-            'alias' => $data['alias'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'avatar' => $defaultAvatar,
+            'name'                   => $data['name'],
+            'alias'                  => $data['alias'],
+            'email'                  => $data['email'],
+            'password'               => Hash::make($data['password']),
+            'avatar'                 => $defaultAvatar,
         ]);
 
-        // 2. Asignar automaticamente el rol de ESTUDIANTE
-        $user->assignRole('ESTUDIANTE');
+        // 2. Asignar rol base ESTUDIANTE y registrar en el ciclo vigente
+        $user->assignRole(CicloUsuarioRole::ROLE_ESTUDIANTE);
 
-        // 3. NUEVO: 3 monedas de cortesia (registra la transaccion en el libro mayor)
+        if ($cicloActivo = Ciclo::vigente()) {
+            CicloUsuarioRole::updateOrCreate(
+                [
+                    'ciclo_id' => $cicloActivo->id,
+                    'user_id'  => $user->id,
+                ],
+                [
+                    'role_name'    => CicloUsuarioRole::ROLE_ESTUDIANTE,
+                    'team_id'      => $user->team_id,
+                    'asignado_por' => $user->id,
+                ]
+            );
+        }
+
+        // 3. 3 monedas de cortesía (registra la transacción en el libro mayor)
         BonoBienvenida::otorgar($user);
 
         return $user;

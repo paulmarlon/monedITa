@@ -1,0 +1,4 @@
+com.example.authapp.test.app-androidTest-0 /home/paul/Desarrollo/2_proyectos/13_monedITa/android/app/build/generated/res/resValues/androidTest/debug
+com.example.authapp.test.app-mergeDebugAndroidTestResources-1 /home/paul/Desarrollo/2_proyectos/13_monedITa/android/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.example.authapp.test.app-mergeDebugAndroidTestResources-2 /home/paul/Desarrollo/2_proyectos/13_monedITa/android/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.example.authapp.test.app-debugAndroidTest-3 /home/paul/Desarrollo/2_proyectos/13_monedITa/android/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources

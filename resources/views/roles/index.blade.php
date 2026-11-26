@@ -35,7 +35,7 @@
                     <tr>
                         <th class="py-2" style="width: 10px">#</th>
                         <th class="py-2">Nombre del Rol</th>
-                        <th style="width: 120px" class="text-center py-2">Acciones</th>
+                        <th style="width: 25%" class="text-center py-2">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,8 +64,8 @@
                                         id="formEliminar{{ $role->id }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn btn-danger btn-sm rounded-0 rounded-end"
-                                            title="Eliminar rol" onclick="confirmarEliminacion({{ $role->id }})">
+                                        <button type="button" class="btn btn-danger btn-sm" title="Eliminar rol"
+                                            onclick="confirmarEliminacion({{ $role->id }})">
                                             <i class="bi bi-trash text-white"></i> Eliminar
                                         </button>
                                     </form>

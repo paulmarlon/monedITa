@@ -4,11 +4,13 @@
 
 {{-- Esto añade la imagen del logo como favicon de la pestaña --}}
 <link rel="icon" href="{{ $configGlobal->logo ?? asset('usb/don bosco.png') }}">
+
 @section('plugins.SelectBs', true)
+@section('plugins.Datatables', true)
 @section('plugins.Sweetalert2', true)
 
 @section('content_header')
-    <h1>MonedITa <small>Fondo Eco-Salesiano</small></h1>
+    <h1><small>Ecosistema Digital de Seguimiento para el Reciclaje Solidario</small></h1>
 @stop
 
 @section('content')
@@ -149,25 +151,23 @@
 
             </div>
 
-            <!-- Tabla de Historial Compacto (Últimas 5 transacciones interactivas) -->
+            <!-- Tabla de Historial -->
             <div class="col-lg-8 col-md-6">
-                <div class="card mt-4 mt-lg-0">
-                    <!-- Único encabezado limpio -->
+                <div class="card card-info card-outline shadow mt-4 mt-lg-0">
                     <div class="card-header py-2 d-flex justify-content-between align-items-center">
                         <h3 class="card-title mb-0 text-sm">
-                            <i class="bi bi-clock-history"></i> Historial Reciente
+                            <i class="bi bi-clock-history"></i> Historial de Transacciones
                         </h3>
-                        <!-- Botón desplegable adaptativo para modo claro y oscuro -->
                         <button class="btn btn-tool p-0 d-lg-none" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapseHistorial" aria-expanded="false" aria-controls="collapseHistorial">
                             <i class="bi bi-chevron-down"></i> Desplegar
                         </button>
                     </div>
 
-                    <!-- Cuerpo colapsable solo en móviles (d-lg-block asegura que en PC grande permanezca visible siempre) -->
                     <div class="collapse d-lg-block" id="collapseHistorial">
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-sm table-hover text-nowrap align-middle mb-0"
+                        <div class="card-body">
+                            <table id="historialTable"
+                                class="table table-bordered table-striped table-hover table-sm w-100 align-middle mb-0"
                                 style="cursor: pointer;">
                                 <thead class="table-dark">
                                     <tr>
@@ -177,7 +177,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @forelse($transacciones as $tx)
+                                    @foreach ($transacciones as $tx)
                                         <tr data-bs-toggle="modal" data-bs-target="#modalTx{{ $tx->id }}"
                                             title="Ver detalle completo">
                                             <td class="small">
@@ -199,20 +199,10 @@
                                                     class="fw-bold text-success">{{ number_format($tx->saldo_despues ?? 0, 2) }}</span>
                                             </td>
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="3" class="text-center text-muted py-3">Sin movimientos
-                                                registrados.</td>
-                                        </tr>
-                                    @endforelse
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
-                        @if ($transacciones->hasPages())
-                            <div class="card-footer py-2 d-flex justify-content-center">
-                                {{ $transacciones->links() }}
-                            </div>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -320,6 +310,32 @@
         }
 
         $(document).ready(function() {
+            if ($('#historialTable').length) {
+                $('#historialTable').DataTable({
+                    responsive: true,
+                    autoWidth: false,
+                    order: [],
+                    language: {
+                        "decimal": "",
+                        "emptyTable": "No hay datos disponibles en la tabla",
+                        "info": "Mostrando _START_ a _END_ de _TOTAL_ registros",
+                        "infoEmpty": "Mostrando 0 to 0 of 0 registros",
+                        "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                        "lengthMenu": "Mostrar _MENU_ registros",
+                        "loadingRecords": "Cargando...",
+                        "processing": "Procesando...",
+                        "search": "Buscar:",
+                        "zeroRecords": "No se encontraron registros coincidentes",
+                        "paginate": {
+                            "first": "Primero",
+                            "last": "Último",
+                            "next": "Siguiente",
+                            "previous": "Anterior"
+                        }
+                    }
+                });
+            }
+
             @if (session('success') || session('mensaje'))
                 Swal.fire({
                     position: 'top-end',

@@ -812,13 +812,6 @@ return [
             'header' => 'GESTIÓN OPERATIVA',
         ],
         [
-            'text' => 'Periodos',
-            'route' => 'ciclos.index',
-            'icon' => 'bi bi-calendar-event me-1',
-            'classes' => 'btn-efecto-elevar text-info',
-            'can' => 'ver_ciclos',
-        ],
-        [
             'text' => 'Equipos',
             'route' => 'teams.index',
             'icon' => 'bi bi-people me-1',
@@ -862,6 +855,13 @@ return [
         // --- ADMINISTRACIÓN Y SEGURIDAD ---
         [
             'header' => 'ADMINISTRACIÓN Y SEGURIDAD',
+        ],
+        [
+            'text' => 'Usuarios y Ciclos',
+            'route' => 'admin.usuarios-ciclos.index',
+            'icon' => 'bi bi-person-gear me-1',
+            'classes' => 'btn-efecto-elevar text-primary',
+            'can' => 'ver_roles',
         ],
         [
             'text' => 'Gestión de Roles',

@@ -5,8 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Ciclo;
-use App\Models\Juego;
-use \App\Models\Team;
+use App\Models\Team;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
@@ -20,6 +19,7 @@ class DatabaseSeeder extends Seeder
         // 1. Ejecutar el seeder que define los roles y permisos
         $this->call([
             RoleSeeder::class,
+            JuegosSeeder::class,
         ]);
 
         // 2. Limpiar caché de permisos de Spatie por seguridad
@@ -38,41 +38,16 @@ class DatabaseSeeder extends Seeder
                 'email'             => 'admin@usalesiana.edu.bo',
                 'password'          => Hash::make('12345'),
                 'email_verified_at' => now(),
+                'es_admin_raiz'     => true,
             ]
         );
+
+        if (!$admin->es_admin_raiz) {
+            $admin->update(['es_admin_raiz' => true]);
+        }
 
         if ($roleAdmin && !$admin->hasRole('ADMINISTRADOR')) {
             $admin->assignRole($roleAdmin);
-        }
-
-        // 5. Crear o buscar el usuario Supervisor (RU: 00002)
-        $supervisor = User::firstOrCreate(
-            ['registro_universitario' => '00002'],
-            [
-                'name'              => 'supervisor',
-                'alias'             => 'supervisor',
-                'email'             => 'supervisor@usalesiana.edu.bo',
-                'password'          => Hash::make('12345'),
-                'email_verified_at' => now(),
-            ]
-        );
-
-        if ($roleSupervisor && !$supervisor->hasRole('SUPERVISOR')) {
-            $supervisor->assignRole($roleSupervisor);
-        }
-        $estudiante = User::firstOrCreate(
-            ['registro_universitario' => '00003'],
-            [
-                'name'              => 'estudiante',
-                'alias'             => 'estudiante',
-                'email'             => 'estudiante@usalesiana.edu.bo',
-                'password'          => Hash::make('12345'),
-                'email_verified_at' => now(),
-            ]
-        );
-
-        if ($roleEstudiante && !$estudiante->hasRole('ESTUDIANTE')) {
-            $estudiante->assignRole($roleEstudiante);
         }
 
 
@@ -87,16 +62,7 @@ class DatabaseSeeder extends Seeder
                 'fecha_fin'    => '2026-12-31 23:59:59',
             ]
         );
-        // 7. Crear el registro por defecto del minijuego de Dinosaurio
-        Juego::firstOrCreate(
-            ['slug' => 'dinosaurio_runner'],
-            [
-                'titulo'       => 'Dino Runner F.E.S.',
-                'descripcion'  => 'El clásico juego del dinosaurio adaptado para la plataforma. Salta los obstáculos y acumula la mayor cantidad de puntos.',
-                'costo_ficha'  => 1.00,
-                'activo'       => true,
-            ]
-        );
+
         // 8. Crear o asegurar un Team por defecto asociado al Ciclo Activo
         $cicloActivo = Ciclo::where('estado', 'ACTIVO')->first();
 

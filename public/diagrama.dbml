@@ -1,127 +1,160 @@
-Table configuraciones {
-  id integer [primary key, increment]
-  nombre varchar [not null]
-  descripcion text
-  direccion varchar
-  telefono varchar
-  correo varchar
-  web varchar
-  logo varchar
-  created_at timestamp
-  updated_at timestamp
+// ==========================================
+// 0. CONFIGURACIÓN GENERAL
+// ==========================================
+Table configuracions {
+    id bigint [pk, increment]
+    nombre varchar [not null]
+    descripcion text [null]
+    direccion varchar [null]
+    telefono varchar [null]
+    correo varchar [null]
+    web varchar [null]
+    logo varchar [null]
+    created_at timestamp [null]
+    updated_at timestamp [null]
 }
 
 // ==========================================
 // 1. GESTIÓN DE CICLOS Y CONVOCATORIAS
 // ==========================================
 Table ciclos {
-  id bigint [pk, increment]
-  nombre varchar [not null] // Ej: "Periodo 1/2026"
-  estado varchar [default: 'ACTIVO', not null] // "ACTIVO", "CERRADO"
-  fecha_inicio timestamp [null]
-  fecha_fin timestamp [null]
-  created_at timestamp [null]
-  updated_at timestamp [null]
-  deleted_at timestamp [null] // SoftDeletes
+    id bigint [pk, increment]
+    nombre varchar [not null] // Ej: "Periodo 1/2026"
+    estado varchar [default: 'ACTIVO', not null] // "ACTIVO", "CERRADO"
+    fecha_inicio timestamp [null]
+    fecha_fin timestamp [null]
+    created_at timestamp [null]
+    updated_at timestamp [null]
+    deleted_at timestamp [null] // SoftDeletes
 }
 
 // ==========================================
 // 2. GESTIÓN DE TEAMS (EQUIPOS / AULAS)
 // ==========================================
 Table teams {
-  id bigint [pk, increment]
-  nombre varchar [not null]
-  ciclo_id bigint [ref: > ciclos.id, not null] // Relación con ciclos (cascade)
-  logo varchar [null] // Ruta del archivo en storage
-  created_at timestamp [null]
-  updated_at timestamp [null]
-  deleted_at timestamp [null] // SoftDeletes
+    id bigint [pk, increment]
+    nombre varchar [not null]
+    ciclo_id bigint [ref: > ciclos.id, not null] // onDelete: cascade
+    logo varchar [null]
+    created_at timestamp [null]
+    updated_at timestamp [null]
+    deleted_at timestamp [null] // SoftDeletes
 }
 
 // ==========================================
-// 3. USUARIOS (Adaptado a Laravel + Spatie)
+// 3. USUARIOS (Laravel + Sanctum + Spatie + 2FA)
 // ==========================================
 Table users {
-  id bigint [pk, increment]
-  registro_universitario varchar [unique, not null] // Clave para el login
-  name varchar [not null] // Nombre completo oficial
-  alias varchar [unique, not null] // Obligatorio y único para la plataforma
-  email varchar [unique, not null] // Obligatorio y único
-  email_verified_at timestamp [null]
-  password varchar [not null]
-  avatar varchar [null] // Foto o insignia de perfil
-  team_id bigint [ref: > teams.id, null] // Relación con equipos (set null)
-  remember_token varchar [null]
-  created_at timestamp [null]
-  updated_at timestamp [null]
+    id bigint [pk, increment]
+    registro_universitario varchar [unique, not null] // Clave para el login
+    name varchar [not null]
+    alias varchar [unique, not null]
+    email varchar [unique, not null]
+    email_verified_at timestamp [null]
+    password varchar [not null]
+    two_factor_secret text [null, note: 'AÑADIDO (tapITa): secreto cifrado para 2FA / TOTP']
+    two_factor_recovery_codes text [null, note: 'AÑADIDO (tapITa): códigos de recuperación 2FA']
+    two_factor_confirmed_at timestamp [null, note: 'AÑADIDO (tapITa): fecha de confirmación 2FA']
+    avatar varchar [null]
+    team_id bigint [ref: > teams.id, null] // onDelete: set null
+    remember_token varchar [null]
+    created_at timestamp [null]
+    updated_at timestamp [null]
 }
 
 // ==========================================
-// 4. BILLETERA VIRTUAL (WALLET DE MONEDITAS)
+// 4. AUTENTICACIÓN API (SANCTUM + ANDROID)
+// ==========================================
+Table personal_access_tokens {
+    id bigint [pk, increment]
+    tokenable_type varchar [not null]
+    tokenable_id bigint [ref: > users.id, not null, note: 'Cuando tokenable_type es App\\Models\\User']
+    name text [not null, note: 'Identificador del dispositivo Android para control de sesión única']
+    token varchar(64) [unique, not null]
+    abilities text [null]
+    last_used_at timestamp [null]
+    expires_at timestamp [null]
+    created_at timestamp [null]
+    updated_at timestamp [null]
+
+    indexes {
+        (tokenable_type, tokenable_id) [name: 'pat_tokenable_idx']
+    }
+
+}
+
+// ==========================================
+// 5. AUDITORÍA DE ACCESOS
+// ==========================================
+Table auditoria_accesos {
+    id bigint [pk, increment]
+    user_id bigint [ref: > users.id, null] // nullOnDelete
+    ip_address varchar(45) [null]
+    user_agent text [null]
+    evento varchar [default: 'LOGIN', not null, note: 'LOGIN, LOGOUT, EXPULSADO']
+    created_at timestamp [not null]
+}
+
+// ==========================================
+// 6. BILLETERA VIRTUAL (WALLET)
 // ==========================================
 Table wallets {
-  id int [pk, increment]
-  user_id int [ref: - users.id, unique]
-  saldo_actual decimal(10,2) [default: 0.00]
-  updated_at timestamp
+    id bigint [pk, increment]
+    user_id bigint [ref: - users.id, unique, not null] // onDelete: cascade
+    saldo_actual decimal(10,2) [default: 0.00, not null]
+    created_at timestamp [null]
+    updated_at timestamp [null]
 }
 
 // ==========================================
-// 5. CAUSA DINOSAURIO (FONDO COMÚN)
+// 7. CAUSA COMÚN
 // ==========================================
 Table causa_comun {
-  id int [pk, increment]
-  ciclo_id int [ref: > ciclos.id]
-  total_acumulado decimal(10,2) [default: 0.00]
-  descripcion varchar
-  updated_at timestamp
+    id bigint [pk, increment]
+    ciclo_id bigint [ref: > ciclos.id, not null] // onDelete: cascade
+    total_acumulado decimal(10,2) [default: 0.00, not null]
+    descripcion varchar [null]
+    created_at timestamp [null]
+    updated_at timestamp [null]
 }
 
 // ==========================================
-// 6. AUDITORÍA Y TRAZABILIDAD (LIBRO MAYOR)
+// 8. LIBRO MAYOR INMUTABLE (TRANSACCIONS)
 // ==========================================
-Table transacciones {
-  id int [pk, increment]
-  ciclo_id int [ref: > ciclos.id]
-  emisor_id int [ref: > users.id, null] // Null si viene del sistema
-  receptor_id int [ref: > users.id, null] // Null si va a la causa dinosaurio
-  monto decimal(10,2)
-  tipo_operacion varchar // "RECICLAJE", "REPARTO_GRUPAL", "DUELO", "CAUSA_DINOSAURIO", "MINIJUEGO"
-  observacion varchar
-  created_at timestamp
+Table transaccions {
+    id bigint [pk, increment]
+    ciclo_id bigint [ref: > ciclos.id, not null] // onDelete: cascade
+    emisor_id bigint [ref: > users.id, null] // null si viene del sistema, set null al borrar user
+    receptor_id bigint [ref: > users.id, null] // null si va a causa común, set null al borrar user
+    monto decimal(10,2) [not null]
+    tipo_operacion varchar [not null, note: 'TRANSFERENCIA, RECICLAJE, CAUSA_DINOSAURIO, CONSUMO_MINIJUEGO, etc.']
+    observacion varchar [null]
+    created_at timestamp [not null, note: 'Inmutable (useCurrent), sin updated_at']
 }
 
 // ==========================================
-// 7. MINIJUEGOS INDIVIDUALES (RANKINGS)
-// ==========================================
-Table minijuegos_puntajes {
-  id int [pk, increment]
-  user_id int [ref: > users.id]
-  juego_nombre varchar
-  puntaje int
-  created_at timestamp
-}
-// ==========================================
-// CATÁLOGO DE MINIJUEGOS (NUEVA TABLA AUXILIAR)
+// 9. CATÁLOGO DE MINIJUEGOS
 // ==========================================
 Table juegos {
-  id int [pk, increment]
-  slug varchar [unique, not null] // Identificador único: 'dinosaurio_runner', 'piedra_papel_tijera'
-  titulo varchar [not null] // Nombre visual: 'Dino Runner', 'Piedra, Papel o Tijera'
-  descripcion text [null]
-  costo_ficha decimal(10,2) [default: 0.00] // Costo para jugar si aplica
-  activo boolean [default: true] // Para habilitar/deshabilitar el juego
-  created_at timestamp
-  updated_at timestamp
+    id bigint [pk, increment]
+    slug varchar [unique, not null]
+    titulo varchar [not null]
+    descripcion text [null]
+    costo_ficha decimal(10,2) [default: 0.00, not null]
+    activo boolean [default: true, not null]
+    created_at timestamp [null]
+    updated_at timestamp [null]
+    deleted_at timestamp [null] // SoftDeletes
 }
 
 // ==========================================
-// REGISTRO DE PUNTAJES Y RÉCORDS
+// 10. PUNTAJES DE MINIJUEGOS
 // ==========================================
 Table minijuegos_puntajes {
-  id int [pk, increment]
-  user_id int [ref: > users.id, not null]
-  juego_id int [ref: > juegos.id, not null] // Relación directa con la tabla juegos
-  puntaje int [not null]
-  created_at timestamp
+    id bigint [pk, increment]
+    user_id bigint [ref: > users.id, not null] // onDelete: cascade
+    juego_id bigint [ref: > juegos.id, not null] // onDelete: cascade
+    puntaje int [not null]
+    created_at timestamp [not null]
+    updated_at timestamp [null]
 }

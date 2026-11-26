@@ -28,7 +28,7 @@
                         <br>
                         Bienvenido a <b>{{ $configGlobal->nombre ?? 'tapITa' }}</b>.
                         <br>
-                        <b>{{ $configGlobal->descripcion ?? 'Fondo Eco Salesiano' }}.</b>
+                        <b>{{ $configGlobal->descripcion ?? 'EcoSistema Digital de Seguimiento para el Reciclaje Solidario y Gamificacion' }}.</b>
                     </p>
 
                     <div class="d-flex justify-content-center gap-2">
